@@ -9,6 +9,7 @@ atrix.configure({ pluginMap: { acl: path.join(__dirname, '../') } });
 const svc = new atrix.Service('s1', {
 	acl: {
 		aclDefinition: path.join(__dirname, './acls'),
+		allowInject: true,
 	},
 	swagger: {
 		serviceDefinition: path.join(__dirname, './s1.yml'),

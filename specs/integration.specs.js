@@ -19,6 +19,20 @@ describe('Handlers registrations are intercepted and altered', () => {
 	});
 
 	describe('ACLs', () => {
+		describe('Inject', () => {
+			const server = svc.service.endpoints.get('http').instance.server;
+			it('should allow inject routes with config allowInject:true', async () => {
+				const res = await server.inject({ method: 'get', url: '/prefix/' });
+				expect(res.statusCode).to.equal(200);
+			});
+
+			it('should deny inject routes with config allowInject:false', async () => {
+				atrixACL.allowInject = false;
+				const res = await server.inject({ method: 'get', url: '/prefix/' });
+				expect(res.statusCode).to.equal(401);
+			});
+		});
+
 		it('denies GET to / route if no ACLs are defined', async () => {
 			const res = await svc.test.get('/prefix/');
 			expect(res.statusCode).to.equal(401);
