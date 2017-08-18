@@ -45,6 +45,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 				.get('/prefix/')
 				.set('x-pathfinder-role', 'admin');
 			expect(res.statusCode).to.equal(200);
+
 		});
 
 		describe('UserId', () => {
@@ -60,6 +61,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 					.get('/prefix/pets/242')
 					.set('x-pathfinder-role', 'admin');
 				expect(res.statusCode).to.equal(200);
+				expect(res.body.id).to.equal('242');
 			});
 
 			it('allows POST with correct userId', async () => {
