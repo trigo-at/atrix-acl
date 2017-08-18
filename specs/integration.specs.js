@@ -47,6 +47,35 @@ describe('Handlers registrations are intercepted and altered', () => {
 			expect(res.statusCode).to.equal(200);
 		});
 
+		describe('UserId', () => {
+			beforeEach(async () => {
+				atrixACL.setRules([
+					{ role: 'admin', path: '/pets/:petId', method: '*' },
+					{ userId: '42', path: '/pets/:petId', method: '*' },
+				]);
+			});
+
+			it('allow GET with correct role', async () => {
+				const res = await svc.test
+					.get('/prefix/pets/242')
+					.set('x-pathfinder-role', 'admin');
+				expect(res.statusCode).to.equal(200);
+			});
+
+			it('allows POST with correct userId', async () => {
+				const res = await svc.test
+					.post('/prefix/pets/242')
+					.set('x-pathfinder-userid', '42');
+				expect(res.statusCode).to.equal(200);
+			});
+
+			it('denies with wrong userid', async () => {
+				const res = await svc.test
+					.post('/prefix/pets/242')
+					.set('x-pathfinder-userid', '123');
+				expect(res.statusCode).to.equal(401);
+			});
+		});
 		describe('method:*, id:*', () => {
 			beforeEach(async () => {
 				atrixACL.setRules([{ role: 'admin', path: '/pets/:petId', method: '*' }]);
