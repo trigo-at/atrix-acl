@@ -33,6 +33,17 @@ describe('Handlers registrations are intercepted and altered', () => {
 			});
 		});
 
+		describe('Filter endpoints', () => {
+			it('should ignore routes defined in config.endpoints', async () => {
+				atrixACL.setRules([{ role: 'admin', path: '/*_', method: '*' }]);
+
+				const res = await svc.test
+					.post('/prefix/reset')
+					.set('x-pathfinder-role', 'bla');
+				expect(res.statusCode).to.equal(200);
+			});
+		});
+
 		it('denies GET to / route if no ACLs are defined', async () => {
 			const res = await svc.test.get('/prefix/');
 			expect(res.statusCode).to.equal(401);
@@ -45,7 +56,6 @@ describe('Handlers registrations are intercepted and altered', () => {
 				.get('/prefix/')
 				.set('x-pathfinder-role', 'admin');
 			expect(res.statusCode).to.equal(200);
-
 		});
 
 		describe('UserId', () => {

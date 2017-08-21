@@ -10,6 +10,9 @@ const svc = new atrix.Service('s1', {
 	acl: {
 		aclDefinition: path.join(__dirname, './acls'),
 		allowInject: true,
+		endpoints: [
+			'^(?!(/alive|/reset))',
+		],
 	},
 	swagger: {
 		serviceDefinition: path.join(__dirname, './s1.yml'),
