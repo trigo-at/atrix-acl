@@ -239,5 +239,88 @@ describe('Handlers registrations are intercepted and altered', () => {
 				expect(res.statusCode).to.equal(401);
 			});
 		});
+
+		describe('onPreResponse', () => {
+			beforeEach(async () => {
+				atrixACL.setRules([{ role: 'admin', path: '/pets/242', method: '*' }]);
+			});
+
+			it('filters _links (hrefs) from response body which are not allowed due to ACLs', async () => {
+				const res = await svc.test
+					.get('/prefix/pets/242')
+					.set('x-pathfinder-role', 'admin');
+
+				const allowedLinks = {
+					self: {
+						href: '/pets/242',
+						method: 'get',
+					},
+					update:	{
+						href: '/pets/242',
+						method: 'patch',
+					},
+				};
+				expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
+				expect(res.statusCode).to.equal(200);
+			});
+
+			it('filters _links (hrefs + transitions) from response body which are not allowed due to ACLs', async () => {
+				atrixACL.setRules([
+					{ role: 'admin', path: '/pets/242', method: '*' },
+					{ role: 'admin', transition: 'cancel:speaker', method: '*' },
+				]);
+				const res = await svc.test
+					.get('/prefix/pets/242')
+					.set('x-pathfinder-role', 'admin');
+
+				const allowedLinks = {
+					self: {
+						href: '/pets/242',
+						method: 'get',
+					},
+					update:	{
+						href: '/pets/242',
+						method: 'patch',
+					},
+					'cancel:speaker': {
+						href: '/pets/242/speaker-requests/{requestId}/cancellation',
+						method: 'delete',
+					},
+				};
+				expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
+				expect(res.statusCode).to.equal(200);
+			});
+
+			it('filters _links (hrefs + wildcard transitions) from response body which are not allowed due to ACLs', async () => {
+				atrixACL.setRules([
+					{ role: 'admin', path: '/pets/242', method: '*' },
+					{ role: 'admin', transition: 'cancel(:*_)', method: '*' },
+				]);
+				const res = await svc.test
+					.get('/prefix/pets/242')
+					.set('x-pathfinder-role', 'admin');
+
+				const allowedLinks = {
+					self: {
+						href: '/pets/242',
+						method: 'get',
+					},
+					update:	{
+						href: '/pets/242',
+						method: 'patch',
+					},
+					cancel:	{
+						href: '/pets/242/cancellation',
+						method: 'put',
+					},
+					'cancel:speaker': {
+						href: '/pets/242/speaker-requests/{requestId}/cancellation',
+						method: 'delete',
+					},
+				};
+				expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
+				expect(res.statusCode).to.equal(200);
+			});
+		});
 	});
 });
