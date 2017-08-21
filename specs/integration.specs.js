@@ -193,6 +193,18 @@ describe('Handlers registrations are intercepted and altered', () => {
 			});
 		});
 
+		describe.only('wildcard param in accessed path', () => {
+			beforeEach(async () => {
+				atrixACL.setRules([{ role: 'admin', path: '/pets/242/toys/*bla', method: 'put' }]);
+			});
+
+			it('allows PUT to wildcard path (used in HATR links)', async () => {
+				const res = await svc.test
+					.put('/prefix/pets/242/toys/{toyId}')
+					.set('x-pathfinder-role', 'admin');
+				expect(res.statusCode).to.equal(200);
+			});
+		});
 
 		describe('method:PUT ID:* subId:242', () => {
 			beforeEach(async () => {
