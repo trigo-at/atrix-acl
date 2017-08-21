@@ -240,6 +240,71 @@ describe('Handlers registrations are intercepted and altered', () => {
 			});
 		});
 
+
+		describe('method:[GET, PUT] ID:* subId:242', () => {
+			beforeEach(async () => {
+				atrixACL.setRules([{ role: 'admin', path: '/pets/*a/toys/242', method: ['put', 'get'] }]);
+			});
+
+			it('allows PUT to specific sub-resources with wildcard main-resource', async () => {
+				const res = await svc.test
+					.put('/prefix/pets/242/toys/242')
+					.set('x-pathfinder-role', 'admin');
+				expect(res.statusCode).to.equal(200);
+			});
+
+			it('allows PUT to specific sub-resources with wildcard main-resource', async () => {
+				const res = await svc.test
+					.put('/prefix/pets/123/toys/242')
+					.set('x-pathfinder-role', 'admin');
+				expect(res.statusCode).to.equal(200);
+			});
+
+			it('allows PUT to specific sub-resources with wildcard main-resource', async () => {
+				const res = await svc.test
+					.get('/prefix/pets/242/toys/242')
+					.set('x-pathfinder-role', 'admin');
+				expect(res.statusCode).to.equal(200);
+			});
+
+			it('allows PUT to specific sub-resources with wildcard main-resource', async () => {
+				const res = await svc.test
+					.get('/prefix/pets/123/toys/242')
+					.set('x-pathfinder-role', 'admin');
+				expect(res.statusCode).to.equal(200);
+			});
+
+
+			it('denies PUT to wrong sub-resources with wildcard main-resource', async () => {
+				const res = await svc.test
+					.post('/prefix/pets/123/toys/242')
+					.set('x-pathfinder-role', 'admin');
+				expect(res.statusCode).to.equal(401);
+			});
+
+			it('denies PUT to specific sub-resources action with wildcard main-resource', async () => {
+				const res = await svc.test
+					.post('/prefix/pets/242/toys/242')
+					.set('x-pathfinder-role', 'admin');
+				expect(res.statusCode).to.equal(401);
+			});
+
+			it('denies PUT to wrong sub-resources with wildcard main-resource', async () => {
+				const res = await svc.test
+					.put('/prefix/pets/123/toys/123')
+					.set('x-pathfinder-role', 'admin');
+				expect(res.statusCode).to.equal(401);
+			});
+
+			it('denies PUT to specific sub-resources action with wildcard main-resource', async () => {
+				const res = await svc.test
+					.put('/prefix/pets/123/toys/242/buy')
+					.set('x-pathfinder-role', 'admin');
+				expect(res.statusCode).to.equal(401);
+			});
+		});
+
+
 		describe('onPreResponse', () => {
 			beforeEach(async () => {
 				atrixACL.setRules([{ role: 'admin', path: '/pets/242', method: '*' }]);
