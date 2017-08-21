@@ -193,7 +193,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 			});
 		});
 
-		describe.only('wildcard param in accessed path', () => {
+		describe('wildcard param in accessed path', () => {
 			beforeEach(async () => {
 				atrixACL.setRules([{ role: 'admin', path: '/pets/242/toys/*bla', method: 'put' }]);
 			});
