@@ -324,6 +324,9 @@ describe('Handlers registrations are intercepted and altered', () => {
 						href: '/pets/242',
 						method: 'patch',
 					},
+					cancel:	false,
+					'assign:venue:request': false,
+					'cancel:speaker': false,
 				};
 				expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
 				expect(res.statusCode).to.equal(200);
@@ -347,6 +350,8 @@ describe('Handlers registrations are intercepted and altered', () => {
 						href: '/pets/242',
 						method: 'patch',
 					},
+					cancel:	false,
+					'assign:venue:request': false,
 					'cancel:speaker': {
 						href: '/pets/242/speaker-requests/{requestId}/cancellation',
 						method: 'delete',
@@ -378,6 +383,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 						href: '/pets/242/cancellation',
 						method: 'put',
 					},
+					'assign:venue:request': false,
 					'cancel:speaker': {
 						href: '/pets/242/speaker-requests/{requestId}/cancellation',
 						method: 'delete',
