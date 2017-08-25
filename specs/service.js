@@ -10,6 +10,18 @@ const svc = new atrix.Service('s1', {
 	acl: {
 		aclDefinition: path.join(__dirname, './acls'),
 		allowInject: true,
+		tokenResourceAccessRoleKey: 'pathfinder-app',
+		endpoints: [
+			'^(?!(/alive|/reset))',
+		],
+	},
+	security: {
+		strategies: {
+			jwt: {
+				secret: 'jwt-token-secret',
+				algorithm: 'HS256',
+			},
+		},
 		endpoints: [
 			'^(?!(/alive|/reset))',
 		],
