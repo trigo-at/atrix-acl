@@ -41,9 +41,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 				atrixACL.setRules([{ role: 'admin', path: '/*_', method: '*' }]);
 
 				const res = await svc.test
-					.post('/prefix/reset')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'bla');
+					.post('/prefix/reset');
 				expect(res.statusCode).to.equal(200);
 			});
 		});
@@ -61,8 +59,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 
 			const res = await svc.test
 				.get('/prefix/')
-				.set(testHeaders)
-				.set('x-pathfinder-role', 'admin');
+				.set(testHeaders);
 			expect(res.statusCode).to.equal(200);
 		});
 
@@ -77,8 +74,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 			it('allow GET with correct role', async () => {
 				const res = await svc.test
 					.get('/prefix/pets/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 				expect(res.body.id).to.equal('242');
 			});
@@ -110,24 +106,21 @@ describe('Handlers registrations are intercepted and altered', () => {
 			it('allow GET', async () => {
 				const res = await svc.test
 					.get('/prefix/pets/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 			});
 
 			it('allows POST', async () => {
 				const res = await svc.test
 					.post('/prefix/pets/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 			});
 
 			it('allow random ID', async () => {
 				const res = await svc.test
 					.post('/prefix/pets/1234234')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 			});
 		});
@@ -140,8 +133,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 			it('allows PUT with correct ID', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 			});
 
@@ -149,8 +141,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 			it('denies PUT to route with wrong ID', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/123')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(401);
 			});
 
@@ -158,8 +149,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 			it('denies GET to route with wrong ID', async () => {
 				const res = await svc.test
 					.get('/prefix/pets/123')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(401);
 			});
 
@@ -181,40 +171,35 @@ describe('Handlers registrations are intercepted and altered', () => {
 			it('allows PUT to wildcard sub-resources & action', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/242/toys/bla/buy')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 			});
 
 			it('allows PUT to wildcard sub-resources', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/242/toys/bla')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 			});
 
 			it('allows PUT to wildcard sub-resource', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/242/toys')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 			});
 
 			it('denies PUT to wildcard sub-resource with wrong ID', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/123/toys')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(401);
 			});
 
 			it('denies GET to wildcard sub-resource with wrong method', async () => {
 				const res = await svc.test
 					.get('/prefix/pets/123/toys')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(401);
 			});
 		});
@@ -227,8 +212,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 			it('allows PUT to wildcard path (used in HATR links)', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/242/toys/{toyId}')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 			});
 		});
@@ -241,32 +225,28 @@ describe('Handlers registrations are intercepted and altered', () => {
 			it('allows PUT to specific sub-resources with wildcard main-resource', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/242/toys/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 			});
 
 			it('allows PUT to specific sub-resources with wildcard main-resource', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/123/toys/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 			});
 
 			it('denies PUT to wrong sub-resources with wildcard main-resource', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/123/toys/123')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(401);
 			});
 
 			it('denies PUT to specific sub-resources action with wildcard main-resource', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/123/toys/242/buy')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(401);
 			});
 		});
@@ -280,32 +260,28 @@ describe('Handlers registrations are intercepted and altered', () => {
 			it('allows PUT to specific sub-resources with wildcard main-resource', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/242/toys/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 			});
 
 			it('allows PUT to specific sub-resources with wildcard main-resource', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/123/toys/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 			});
 
 			it('allows PUT to specific sub-resources with wildcard main-resource', async () => {
 				const res = await svc.test
 					.get('/prefix/pets/242/toys/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 			});
 
 			it('allows PUT to specific sub-resources with wildcard main-resource', async () => {
 				const res = await svc.test
 					.get('/prefix/pets/123/toys/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(200);
 			});
 
@@ -313,32 +289,28 @@ describe('Handlers registrations are intercepted and altered', () => {
 			it('denies PUT to wrong sub-resources with wildcard main-resource', async () => {
 				const res = await svc.test
 					.post('/prefix/pets/123/toys/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(401);
 			});
 
 			it('denies PUT to specific sub-resources action with wildcard main-resource', async () => {
 				const res = await svc.test
 					.post('/prefix/pets/242/toys/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(401);
 			});
 
 			it('denies PUT to wrong sub-resources with wildcard main-resource', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/123/toys/123')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(401);
 			});
 
 			it('denies PUT to specific sub-resources action with wildcard main-resource', async () => {
 				const res = await svc.test
 					.put('/prefix/pets/123/toys/242/buy')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 				expect(res.statusCode).to.equal(401);
 			});
 		});
@@ -352,8 +324,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 			it('filters _links (hrefs) from response body which are not allowed due to ACLs', async () => {
 				const res = await svc.test
 					.get('/prefix/pets/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 
 				const allowedLinks = {
 					self: {
@@ -379,8 +350,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 				]);
 				const res = await svc.test
 					.get('/prefix/pets/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 
 				const allowedLinks = {
 					self: {
@@ -409,8 +379,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 				]);
 				const res = await svc.test
 					.get('/prefix/pets/242')
-					.set(testHeaders)
-					.set('x-pathfinder-role', 'admin');
+					.set(testHeaders);
 
 				const allowedLinks = {
 					self: {
@@ -433,6 +402,82 @@ describe('Handlers registrations are intercepted and altered', () => {
 				};
 				expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
 				expect(res.statusCode).to.equal(200);
+			});
+		});
+
+		describe('use tenant-ids header context for roles', async () => {
+			let headers;
+			let roles = {
+				ak: {
+					roles: ['admin'],
+				},
+				voegb: {
+					roles: ['editor', 'event-viewer'],
+				},
+			};
+
+			beforeEach(() => {
+				headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken(roles)}` });
+				atrixACL.setRules([
+					{ role: 'admin', path: '/pets/242', method: '*' },
+					{ role: 'editor', path: '/pets/242', method: '*' },
+				]);
+			});
+
+			it('should allow routes based on roles & tenantIds set through header', async () => {
+				const res = await svc.test
+					.get('/prefix/pets/242')
+					.set(headers)
+					.set('x-pathfinder-tenant-ids', 'ak,voegb');
+
+				expect(res.statusCode).to.equal(200);
+			});
+
+			it('should deny routes based on tenantIds found in header', async () => {
+				roles = {
+					ak: {
+						roles: ['event-viewer'],
+					},
+				};
+				headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken(roles)}` });
+
+				const res = await svc.test
+					.get('/prefix/pets/242')
+					.set(headers)
+					.set('x-pathfinder-tenant-ids', 'ak,voegb');
+
+				expect(res.statusCode).to.equal(401);
+			});
+
+			it('should allow routes based on default app ("pathfinder-app") found in token', async () => {
+				headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken()}` });
+
+				const res = await svc.test
+					.get('/prefix/pets/242')
+					.set(headers)
+					.set('x-pathfinder-tenant-ids', 'ak,voegb');
+
+				expect(res.statusCode).to.equal(200);
+			});
+
+			it('should allow routes based on default app ("pathfinder-app") found in token, with no tenantIds set in header', async () => {
+				headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken()}` });
+
+				const res = await svc.test
+					.get('/prefix/pets/242')
+					.set(headers);
+
+				expect(res.statusCode).to.equal(200);
+			});
+
+			it('should deny routes when no default app or tenantIds are set, thus no role is found', async () => {
+				headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken([])}` });
+
+				const res = await svc.test
+					.get('/prefix/pets/242')
+					.set(headers);
+
+				expect(res.statusCode).to.equal(401);
 			});
 		});
 	});
