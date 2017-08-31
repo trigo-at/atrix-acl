@@ -86,5 +86,5 @@ If not, it returns status-code 401.
 The options **allowInject** and **endpoints** are taken into consideration.
 
 ### onPreResponse
-The plugins checks if a **_links** object is present in the response and manipulates the response-body.
+The plugins checks if a **_links** object is present in the response (or, if response-body is an array, in every item of the array) and manipulates the response-body.
 If present, every link/href in the hatr-links object is tested agains the ACLs and set to false, if the user/role has no access to a specific action/transition.
