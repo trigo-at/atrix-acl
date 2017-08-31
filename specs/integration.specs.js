@@ -22,6 +22,42 @@ describe('Handlers registrations are intercepted and altered', () => {
 	});
 
 	describe('ACLs', () => {
+		describe('User Data', () => {
+			const server = svc.service.endpoints.get('http').instance.server;
+
+			const roles = {
+				'pathfinder-app': { roles: ['super-admin'] },
+				ak: { roles: ['admin', 'editor'] },
+				voegb: { roles: ['super-event-viewer'] },
+			};
+
+			beforeEach(() => {
+				atrixACL.setRules([{ role: 'super-admin', path: '/*_', method: '*' }]);
+			});
+
+			it('should assign user data (roles) to req.auth', async () => {
+				const headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken(roles)}` });
+				const res = await server.inject({ method: 'get', url: '/prefix/', headers });
+
+				expect(res.request.auth).to.exist;
+				expect(res.request.auth.effectiveRoles).to.eql(['super-admin']);
+			});
+
+			it('should assign user data (roles) to req.auth based on tenantIds set in header', async () => {
+				let headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak', authorization: `Bearer ${generateToken(roles)}` });
+				let res = await server.inject({ method: 'get', url: '/prefix/', headers });
+
+				expect(res.request.auth).to.exist;
+				expect(res.request.auth.effectiveRoles).to.have.all.members(['super-admin', 'admin', 'editor']);
+
+				headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak,voegb', authorization: `Bearer ${generateToken(roles)}` });
+				res = await server.inject({ method: 'get', url: '/prefix/', headers });
+
+				expect(res.request.auth).to.exist;
+				expect(res.request.auth.effectiveRoles).to.have.all.members(['super-event-viewer', 'super-admin', 'admin', 'editor']);
+			});
+		});
+
 		describe('Inject', () => {
 			const server = svc.service.endpoints.get('http').instance.server;
 			it('should allow inject routes with config allowInject:true', async () => {
