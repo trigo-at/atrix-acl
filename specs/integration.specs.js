@@ -497,6 +497,45 @@ describe('Handlers registrations are intercepted and altered', () => {
 				]);
 			});
 
+			it('should use the correct ACLs/roles when multiple tenants are set', async () => {
+				atrixACL.setRules([
+					{ tenant: 'ak', role: 'admin', path: '/pets/123', method: 'get' },
+					{ tenant: 'ak', role: 'event-viewer', path: '/pets/42', method: 'get' },
+					{ tenant: 'voegb', role: 'editor', path: '/pets/242', method: 'get' },
+				]);
+
+				headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken(roles)}` });
+
+				let res = await svc.test
+					.get('/prefix/pets/242')
+					.set(headers)
+					.set('x-pathfinder-tenant-ids', 'ak,voegb');
+
+				expect(res.statusCode).to.equal(200);
+
+				res = await svc.test
+					.get('/prefix/pets/123')
+					.set(headers)
+					.set('x-pathfinder-tenant-ids', 'ak');
+
+				expect(res.statusCode).to.equal(200);
+
+				res = await svc.test
+					.get('/prefix/pets/123')
+					.set(headers)
+					.set('x-pathfinder-tenant-ids', 'voegb');
+
+				expect(res.statusCode).to.equal(401);
+
+				res = await svc.test
+					.get('/prefix/pets/42')
+					.set(headers)
+					.set('x-pathfinder-tenant-ids', 'ak,voegb');
+
+				expect(res.statusCode).to.equal(401);
+			});
+
+
 			it('should allow routes based on roles & tenantIds set through header', async () => {
 				const res = await svc.test
 					.get('/prefix/pets/242')
