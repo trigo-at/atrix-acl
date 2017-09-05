@@ -19,6 +19,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 
 	beforeEach(async () => {
 		atrixACL.setRules([]);
+		atrixACL.setFilterRules([]);
 	});
 
 	describe('ACLs', () => {
@@ -469,8 +470,7 @@ describe('Handlers registrations are intercepted and altered', () => {
 						method: 'delete',
 					},
 				};
-
-				res.body.forEach((pet) => {
+				res.body.items.forEach((pet) => {
 					expect(pet._links).to.eql(allowedLinks); //eslint-disable-line
 				});
 
@@ -592,5 +592,50 @@ describe('Handlers registrations are intercepted and altered', () => {
 				expect(res.statusCode).to.equal(401);
 			});
 		});
+	});
+
+	describe.only('Filter properties', () => {
+		beforeEach(() => {
+			atrixACL.setRules([{ role: 'admin', path: '/*_', method: '*' }]);
+			atrixACL.setFilterRules([
+				{ key: '_embedded.*', when: (root, obj) => obj.tenantId && obj.tenantId !== root.tenantId, value: null },
+				{ key: ['name', 'id'], when: () => true, value: 'buh' },
+			]);
+		});
+
+		it('allow GET', async () => {
+			atrixACL.setFilterRules([
+				{ key: '*.id', when: () => true, value: 'buh' },
+			]);
+
+			const res = await svc.test
+				.get('/prefix/pets/242')
+				.set(testHeaders);
+			expect(res.statusCode).to.equal(200);
+
+			const body = res.body;
+			console.log(JSON.stringify(body, null, 2));
+
+			expect(body.id).to.equal('buh');
+		});
+
+		it('allow GET', async () => {
+			const res = await svc.test
+				.get('/prefix/pets/242')
+				.set(testHeaders);
+			expect(res.statusCode).to.equal(200);
+
+			const body = res.body;
+
+			body._embedded.toys.forEach((toy) => {
+				expect(toy.tenantId).to.equal(body.tenantId);
+			});
+			if (body._embedded.food && body._embedded.food.tenantId) {
+				expect(body._embedded.food.tenantId).to.equal(body.tenantId);
+			}
+			expect(body.name).to.equal('buh');
+			expect(body.id).to.equal('buh');
+		});
+
 	});
 });

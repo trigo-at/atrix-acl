@@ -9,6 +9,7 @@ atrix.configure({ pluginMap: { acl: path.join(__dirname, '../') } });
 const svc = new atrix.Service('s1', {
 	acl: {
 		aclDefinition: path.join(__dirname, './acls'),
+		filterPropertiesDefinition: path.join(__dirname, './filter-properties-rules.js'),
 		allowInject: true,
 		tokenResourceAccessRoleKey: 'pathfinder-app',
 		endpoints: [

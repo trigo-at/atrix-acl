@@ -1,7 +1,24 @@
 module.exports = (req, reply) => reply({
 	id: req.params.petId,
 	name: 'Pet 42',
+	tenantId: 'tenant1',
 	photoUrls: ['http://pet_42.pic'],
+	_embedded: {
+		toys: [{
+			id: 42,
+			tenantId: 'tenant1',
+			name: 'foo',
+		}, {
+			id: 32,
+			tenantId: 'tenant2',
+			name: 'bar',
+		}],
+		food: {
+			id: 123,
+			tenantId: 'tenant2',
+			name: 'salami',
+		},
+	},
 	_links: {
 		self: {
 			href: '/pets/242',
