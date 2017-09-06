@@ -9,7 +9,7 @@ const svc = require('./service');
 const testHeaders = require('./helper/test-headers');
 const generateToken = require('./helper/generate-token');
 
-describe('Handlers registrations are intercepted and altered', () => {
+describe('AtrixACL', () => {
 	let atrixACL;
 
 	before(async () => {
@@ -594,48 +594,132 @@ describe('Handlers registrations are intercepted and altered', () => {
 		});
 	});
 
-	describe.only('Filter properties', () => {
+	describe('Filter properties', () => {
 		beforeEach(() => {
 			atrixACL.setRules([{ role: 'admin', path: '/*_', method: '*' }]);
-			atrixACL.setFilterRules([
-				{ key: '_embedded.*', when: (root, obj) => obj.tenantId && obj.tenantId !== root.tenantId, value: null },
-				{ key: ['name', 'id'], when: () => true, value: 'buh' },
-			]);
 		});
 
-		it('allow GET', async () => {
+		it('filter wildcard properties (recursively)', async () => {
 			atrixACL.setFilterRules([
 				{ key: '*.id', when: () => true, value: 'buh' },
 			]);
 
+
 			const res = await svc.test
 				.get('/prefix/pets/242')
 				.set(testHeaders);
 			expect(res.statusCode).to.equal(200);
-
-			const body = res.body;
-			console.log(JSON.stringify(body, null, 2));
-
-			expect(body.id).to.equal('buh');
+			expect(res.body.id).to.equal('buh');
+			expect(res.body._embedded.food.id).to.equal('buh');
 		});
 
-		it('allow GET', async () => {
+		it('should filter sub-objects', async () => {
+			atrixACL.setFilterRules([
+				{ key: '_embedded.*', when: (root, obj) => obj.tenantId && obj.tenantId !== root.tenantId, value: null },
+			]);
+
 			const res = await svc.test
 				.get('/prefix/pets/242')
 				.set(testHeaders);
 			expect(res.statusCode).to.equal(200);
-
-			const body = res.body;
-
-			body._embedded.toys.forEach((toy) => {
-				expect(toy.tenantId).to.equal(body.tenantId);
+			res.body._embedded.toys.forEach((toy) => {
+				expect(toy.tenantId).to.equal(res.body.tenantId);
 			});
-			if (body._embedded.food && body._embedded.food.tenantId) {
-				expect(body._embedded.food.tenantId).to.equal(body.tenantId);
+			if (res.body._embedded.food && res.body._embedded.food.tenantId) {
+				expect(res.body._embedded.food.tenantId).to.equal(res.body.tenantId);
 			}
-			expect(body.name).to.equal('buh');
-			expect(body.id).to.equal('buh');
 		});
 
+		it('should filter multiple keys', async () => {
+			atrixACL.setFilterRules([
+				{ key: ['name', 'id'], when: () => true, value: 'buh' },
+			]);
+
+			const res = await svc.test
+				.get('/prefix/pets/242')
+				.set(testHeaders);
+			expect(res.statusCode).to.equal(200);
+			expect(res.body.name).to.equal('buh');
+			expect(res.body.id).to.equal('buh');
+		});
+
+		it('should ignore properties not present in object', async () => {
+			atrixACL.setFilterRules([
+				{ key: ['name', 'bla', 'bla.*.foo'], when: () => true, value: 'buh' },
+			]);
+
+			const res = await svc.test
+				.get('/prefix/pets/242')
+				.set(testHeaders);
+			expect(res.statusCode).to.equal(200);
+			expect(res.body.name).to.equal('buh');
+		});
+
+		describe('consider roles', () => {
+			let headers;
+			const roles = {
+				ak: {
+					roles: ['admin'],
+				},
+				voegb: {
+					roles: ['editor', 'event-viewer'],
+				},
+			};
+
+			beforeEach(() => {
+				atrixACL.setRules([
+					{ role: 'admin', path: '/*_', method: '*' },
+					{ role: 'event-viewer', path: '/*_', method: '*' },
+					{ role: 'editor', path: '/*_', method: '*' },
+				]);
+			});
+
+			it('role: should consider the effective roles of the current user (through token & tenant-id header)', async () => {
+				headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak,voegb', authorization: `Bearer ${generateToken(roles)}` });
+				atrixACL.setFilterRules([
+					{ role: 'event-viewer', key: 'name', when: () => true, value: 'buh' },
+				]);
+
+				let res = await svc.test
+					.get('/prefix/pets/242')
+					.set(headers);
+				expect(res.statusCode).to.equal(200);
+				expect(res.body.name).to.equal('buh');
+
+				// change role -> filter should not be applied
+				headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak', authorization: `Bearer ${generateToken(roles)}` });
+				res = await svc.test
+					.get('/prefix/pets/242')
+					.set(headers);
+				expect(res.statusCode).to.equal(200);
+				expect(res.body.name).to.equal('Pet 42');
+			});
+
+			it('notRole: should consider the effective roles of the current user (through token & tenant-id header)', async () => {
+				headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak', authorization: `Bearer ${generateToken(roles)}` });
+				atrixACL.setFilterRules([
+					{ notRole: 'event-viewer', key: 'name', when: () => true, value: 'buh' },
+				]);
+
+				const res = await svc.test
+					.get('/prefix/pets/242')
+					.set(headers);
+				expect(res.statusCode).to.equal(200);
+				expect(res.body.name).to.equal('buh');
+			});
+
+			it('notRole: should consider the effective roles of the current user (through token & tenant-id header)', async () => {
+				headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak', authorization: `Bearer ${generateToken(roles)}` });
+				atrixACL.setFilterRules([
+					{ role: '!event-viewer', key: 'name', when: () => true, value: 'buh' },
+				]);
+
+				const res = await svc.test
+					.get('/prefix/pets/242')
+					.set(headers);
+				expect(res.statusCode).to.equal(200);
+				expect(res.body.name).to.equal('buh');
+			});
+		});
 	});
 });
