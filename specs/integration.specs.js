@@ -599,11 +599,10 @@ describe('AtrixACL', () => {
 			atrixACL.setRules([{ role: 'admin', path: '/*_', method: '*' }]);
 		});
 
-		it('filter wildcard properties (recursively)', async () => {
+		it('apply filter if no "when" callback is set', async () => {
 			atrixACL.setFilterRules([
-				{ key: '*.id', when: () => true, value: 'buh' },
+				{ key: '*.id', value: 'buh' },
 			]);
-
 
 			const res = await svc.test
 				.get('/prefix/pets/242')
@@ -611,6 +610,22 @@ describe('AtrixACL', () => {
 			expect(res.statusCode).to.equal(200);
 			expect(res.body.id).to.equal('buh');
 			expect(res.body._embedded.food.id).to.equal('buh');
+		});
+
+		it('filter wildcard properties (recursively)', async () => {
+			atrixACL.setFilterRules([
+				{ key: '*.id', when: () => true, value: 'buh' },
+			]);
+
+			const res = await svc.test
+				.get('/prefix/pets/242')
+				.set(testHeaders);
+			expect(res.statusCode).to.equal(200);
+			expect(res.body.id).to.equal('buh');
+			expect(res.body._embedded.food.id).to.equal('buh');
+			res.body._embedded.toys.forEach((toy) => {
+				expect(toy.id).to.equal('buh');
+			});
 		});
 
 		it('should filter sub-objects', async () => {
@@ -719,6 +734,34 @@ describe('AtrixACL', () => {
 					.set(headers);
 				expect(res.statusCode).to.equal(200);
 				expect(res.body.name).to.equal('buh');
+			});
+
+			it('request-object should be available in when-callback', async () => {
+				headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak', authorization: `Bearer ${generateToken(roles)}` });
+				atrixACL.setFilterRules([
+					{ key: '*.id', when: (root, obj, req) => req.auth.tenantIds.indexOf('ak') >= 0, value: 'buh' },
+				]);
+
+				let res = await svc.test
+					.get('/prefix/pets/242')
+					.set(headers);
+				expect(res.statusCode).to.equal(200);
+				expect(res.body.id).to.equal('buh');
+				expect(res.body._embedded.food.id).to.equal('buh');
+				res.body._embedded.toys.forEach((toy) => {
+					expect(toy.id).to.equal('buh');
+				});
+
+				headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'voegb', authorization: `Bearer ${generateToken(roles)}` });
+				res = await svc.test
+					.get('/prefix/pets/242')
+					.set(headers);
+				expect(res.statusCode).to.equal(200);
+				expect(res.body.id).to.not.equal('buh');
+				expect(res.body._embedded.food.id).to.not.equal('buh');
+				res.body._embedded.toys.forEach((toy) => {
+					expect(toy.id).to.not.equal('buh');
+				});
 			});
 		});
 	});
