@@ -670,6 +670,23 @@ describe('AtrixACL', () => {
 			expect(res.body.name).to.equal('buh');
 		});
 
+
+		describe('consider paths', () => {
+			it('should only apply filter for specific paths', async () => {
+				atrixACL.setFilterRules([
+					{ path: '/pets/*_', key: 'name', when: () => true, value: 'buh' },
+					{ path: '/pets/123/toys', key: 'id', when: () => true, value: 'buh' },
+				]);
+
+				const res = await svc.test
+					.get('/prefix/pets/242')
+					.set(testHeaders);
+				expect(res.statusCode).to.equal(200);
+				expect(res.body.name).to.equal('buh');
+				expect(res.body.id).to.not.equal('buh');
+			});
+		});
+
 		describe('consider roles', () => {
 			let headers;
 			const roles = {
