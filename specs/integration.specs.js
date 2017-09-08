@@ -777,6 +777,20 @@ describe('AtrixACL', () => {
 				expect(res.body.name).to.equal('buh');
 			});
 
+			it('comma-separated roles + notRole: should consider the effective roles of the current user (through token & tenant-id header)', async () => {
+				headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak', authorization: `Bearer ${generateToken(roles)}` });
+				atrixACL.setFilterRules([
+					{ role: 'blabla,!event-viewer', key: 'name', when: () => true, value: 'buh' },
+				]);
+
+				const res = await svc.test
+					.get('/prefix/pets/242')
+					.set(headers);
+				expect(res.statusCode).to.equal(200);
+				expect(res.body.name).to.equal('buh');
+			});
+
+
 			it('request-object should be available in when-callback', async () => {
 				headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak', authorization: `Bearer ${generateToken(roles)}` });
 				atrixACL.setFilterRules([

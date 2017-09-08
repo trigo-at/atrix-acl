@@ -6,5 +6,4 @@ module.exports = () => [
 	{ tenant: '*', role: 'editor1', path: '/pets/:petId/toys/*_', method: 'put' },
 	{ tenant: '*', role: 'editor1', path: '/pets/:petId/toys/1/buy', method: 'post' },
 	{ tenant: '*', role: 'editor2', path: '/pets/:petId/toys/:toyId/buy', method: 'post' },
-	{ tenant: 'ak', role: 'editor1', objectPath: '*' },
 ];
