@@ -70,6 +70,12 @@ describe('Handlers registrations are intercepted and altered', () => {
 				const res = await server.inject({ method: 'get', url: '/prefix/', headers: testHeaders });
 				expect(res.statusCode).to.equal(401);
 			});
+
+			it('should deny inject routes with config allowInject:true and x-atrix-acl-no-inject-bypass header', async () => {
+				atrixACL.allowInject = true;
+				const res = await server.inject({ method: 'get', url: '/prefix/', headers: Object.assign({}, testHeaders, { 'x-atrix-acl-no-inejct-bypass': '1' }) });
+				expect(res.statusCode).to.equal(401);
+			});
 		});
 
 		describe('Filter endpoints', () => {
