@@ -652,6 +652,34 @@ describe('AtrixACL', () => {
 			});
 		});
 
+		it('filter wildcard properties in deeply nested objects (recursively)', async () => {
+			atrixACL.setFilterRules([
+				{ key: ['*.legacy', '*.legacy_courseId'], when: () => true, value: undefined },
+			]);
+
+			const res = await svc.test
+				.get('/prefix/attendee/43443209-7408-4df9-ba56-a3ff7509b699')
+				.set(testHeaders);
+			expect(res.statusCode).to.equal(200);
+			expect(res.body._embedded.event.legacy).to.equal(undefined);
+			expect(res.body._embedded.event.legacy_courseId).to.equal(undefined);
+		});
+
+		it('not filter wildcard properties if when returns false (recursively)', async () => {
+			atrixACL.setFilterRules([
+				{ key: ['*.legacy', '*.legacy_courseId'], when: () => false, value: undefined },
+			]);
+
+			const res = await svc.test
+				.get('/prefix/attendee/43443209-7408-4df9-ba56-a3ff7509b699')
+				.set(testHeaders);
+			expect(res.statusCode).to.equal(200);
+			expect(res.body._embedded.event).to.be.an('object');
+			expect(res.body._embedded.event.legacy_courseId).to.equal(123);
+			expect(res.body._embedded.event.legacy).to.be.an('object');
+			expect(res.body._embedded.event.legacy.courseRemark).to.equal('legacy comment');
+		});
+
 		it('should filter sub-objects', async () => {
 			atrixACL.setFilterRules([
 				{ key: '_embedded.*', when: (root, obj) => obj.tenantId && obj.tenantId !== root.tenantId, value: null },

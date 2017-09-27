@@ -32,7 +32,7 @@ const svc = new atrix.Service('s1', {
 	},
 	endpoints: {
 		http: {
-			port: 3007,
+			port: 3027,
 			handlerDir: `${__dirname}/handler`,
 			prefix: '/prefix',
 		},
