@@ -665,7 +665,7 @@ describe('AtrixACL', () => {
 			expect(res.body._embedded.event.legacy_courseId).to.equal(undefined);
 		});
 
-		it('not filter wildcard properties if when returns false (recursively)', async () => {
+		it('NOT filter wildcard properties in deeply nested objects (recursively)', async () => {
 			atrixACL.setFilterRules([
 				{ key: ['*.legacy', '*.legacy_courseId'], when: () => false, value: undefined },
 			]);
@@ -682,7 +682,7 @@ describe('AtrixACL', () => {
 
 		it('should filter sub-objects', async () => {
 			atrixACL.setFilterRules([
-				{ key: '_embedded.*', when: (root, obj) => obj.tenantId && obj.tenantId !== root.tenantId, value: null },
+				{ key: '_embedded.*', when: ({ root, value }) => value.tenantId && value.tenantId !== root.tenantId, value: null },
 			]);
 
 			const res = await svc.test
@@ -846,7 +846,7 @@ describe('AtrixACL', () => {
 			it('request-object should be available in when-callback', async () => {
 				headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak', authorization: `Bearer ${generateToken(roles)}` });
 				atrixACL.setFilterRules([
-					{ key: '*.id', when: (root, obj, req) => req.auth.tenantIds.indexOf('ak') >= 0, value: 'buh' },
+					{ key: '*.id', when: ({ req }) => req.auth.tenantIds.indexOf('ak') >= 0, value: 'buh' },
 				]);
 
 				let res = await svc.test
