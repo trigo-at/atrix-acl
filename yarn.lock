@@ -3,8 +3,8 @@
 
 
 "@trigo/atrix-swagger@^0.4.11":
-  version "0.4.13"
-  resolved "https://registry.yarnpkg.com/@trigo/atrix-swagger/-/atrix-swagger-0.4.13.tgz#1a500c30b7d9a9ba9bf446488838ce64d052d3ec"
+  version "0.4.14"
+  resolved "https://registry.yarnpkg.com/@trigo/atrix-swagger/-/atrix-swagger-0.4.14.tgz#46a1694b2130e25d9b6b4b649513f6b496959ad2"
   dependencies:
     bluebird "^3.5.0"
     joi "^10.6.0"
@@ -12,10 +12,11 @@
     ramda "^0.24.1"
     swagger-parser "^3.4.1"
 
-"@trigo/atrix@^0.11.5":
-  version "0.11.7"
-  resolved "https://registry.yarnpkg.com/@trigo/atrix/-/atrix-0.11.7.tgz#00667103678c0f491a9db9d0c0f997edfb84e95b"
+"@trigo/atrix@^1.2.0":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@trigo/atrix/-/atrix-1.2.1.tgz#ceec13f995240698a9e149849c65a2f7229aa9c3"
   dependencies:
+    "@trigo/hapi-auth-signedlink" "^0.1.0"
     blipp "^2.3.0"
     bluebird "^3.5.0"
     bluebird-retry "^0.11.0"
@@ -32,6 +33,13 @@
     mocha "^3.4.2"
     ramda "^0.24.1"
     supertest "^3.0.0"
+
+"@trigo/hapi-auth-signedlink@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@trigo/hapi-auth-signedlink/-/hapi-auth-signedlink-0.1.0.tgz#a52a543d983b598bee58514167378d993294d776"
+  dependencies:
+    boom "^5.2.0"
+    hoek "^4.2.0"
 
 abbrev@1:
   version "1.1.1"
