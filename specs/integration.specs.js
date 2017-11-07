@@ -680,7 +680,7 @@ describe('AtrixACL', () => {
 			expect(res.body._embedded.event.legacy.courseRemark).to.equal('legacy comment');
 		});
 
-		it('should filter sub-objects', async () => {
+		it.only('should filter sub-objects', async () => {
 			atrixACL.setFilterRules([
 				{ key: '_embedded.*', when: ({ root, value }) => value.tenantId && value.tenantId !== root.tenantId, value: null },
 			]);
@@ -846,7 +846,9 @@ describe('AtrixACL', () => {
 			it('request-object should be available in when-callback', async () => {
 				headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak', authorization: `Bearer ${generateToken(roles)}` });
 				atrixACL.setFilterRules([
-					{ key: '*.id', when: ({ req }) => req.auth.tenantIds.indexOf('ak') >= 0, value: 'buh' },
+					{ key: '*.id', when: ({ path, req }) =>  {
+						return req.auth.tenantIds.indexOf('ak') >= 0;
+					}, value: 'buh' },
 				]);
 
 				let res = await svc.test
