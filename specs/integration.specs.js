@@ -680,18 +680,19 @@ describe('AtrixACL', () => {
 			expect(res.body._embedded.event.legacy.courseRemark).to.equal('legacy comment');
 		});
 
-		it.only('should filter sub-objects', async () => {
+		it('should filter sub-objects', async () => {
 			atrixACL.setFilterRules([
-				{ key: '_embedded.*', when: ({ root, value }) => value.tenantId && value.tenantId !== root.tenantId, value: null },
+				{ key: '_embedded.*', when: ({ root, value }) => value.tenantId && value.tenantId !== root.tenantId, value: undefined },
 			]);
 
-			const res = await svc.test
-				.get('/prefix/pets/242')
-				.set(testHeaders);
+			const res = await svc.test.get('/prefix/pets/242').set(testHeaders);
 			expect(res.statusCode).to.equal(200);
 			res.body._embedded.toys.forEach((toy) => {
-				expect(toy.tenantId).to.equal(res.body.tenantId);
+				if (toy) {
+					expect(toy.tenantId).to.equal(res.body.tenantId);
+				}
 			});
+
 			if (res.body._embedded.food && res.body._embedded.food.tenantId) {
 				expect(res.body._embedded.food.tenantId).to.equal(res.body.tenantId);
 			}
@@ -846,9 +847,11 @@ describe('AtrixACL', () => {
 			it('request-object should be available in when-callback', async () => {
 				headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak', authorization: `Bearer ${generateToken(roles)}` });
 				atrixACL.setFilterRules([
-					{ key: '*.id', when: ({ path, req }) =>  {
-						return req.auth.tenantIds.indexOf('ak') >= 0;
-					}, value: 'buh' },
+					{ key: '*.id',
+						when: ({ req }) => {
+							return req.auth.tenantIds.indexOf('ak') >= 0;
+						},
+						value: 'buh' },
 				]);
 
 				let res = await svc.test
