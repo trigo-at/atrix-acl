@@ -40,9 +40,5 @@ module.exports = (req, reply) => reply({
 			href: '/pets/242/speaker-requests/{requestId}/cancellation',
 			method: 'delete',
 		},
-		ruletest: {
-			href: false,
-			error: { message: 'some custom rule error' },
-		},
 	},
 });
