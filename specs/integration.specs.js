@@ -27,9 +27,7 @@ describe('AtrixACL', () => {
 			const server = svc.service.endpoints.get('http').instance.server;
 
 			const roles = {
-				'pathfinder-app': { roles: ['super-admin'] },
-				ak: { roles: ['admin', 'editor'] },
-				voegb: { roles: ['super-event-viewer'] },
+				'pathfinder-app': { roles: ['super-admin', 'ak:admin', 'ak:editor', 'voegb:super-event-viewer'] },
 			};
 
 			beforeEach(() => {
@@ -543,11 +541,8 @@ describe('AtrixACL', () => {
 		describe('use tenant-ids header context for roles', async () => {
 			let headers;
 			let roles = {
-				ak: {
-					roles: ['admin'],
-				},
-				voegb: {
-					roles: ['editor', 'event-viewer'],
+				'pathfinder-app': {
+					roles: ['ak:admin', 'voegb:editor', 'voegb:event-viewer'],
 				},
 			};
 
@@ -804,12 +799,9 @@ describe('AtrixACL', () => {
 
 		describe('consider roles', () => {
 			let headers;
-			const roles = {
-				ak: {
-					roles: ['admin'],
-				},
-				voegb: {
-					roles: ['editor', 'event-viewer'],
+			let roles = {
+				'pathfinder-app': {
+					roles: ['ak:admin', 'voegb:editor', 'voegb:event-viewer'],
 				},
 			};
 
