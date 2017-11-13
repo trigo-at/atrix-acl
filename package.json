@@ -25,6 +25,7 @@
     "boom": "^5.2.0",
     "joi": "^10.6.0",
     "joi-date-extensions": "^1.0.2",
+    "jsonwebtoken": "^7.4.3",
     "ramda": "^0.24.1",
     "route-parser": "0.0.5",
     "shot": "^3.4.2"
@@ -37,7 +38,6 @@
     "eslint-config-trigo": "^4.1.1",
     "eslint-plugin-import": "^2.3.0",
     "eslint-plugin-mocha": "^4.10.1",
-    "jsonwebtoken": "^7.4.3",
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
     "supertest": "^3.0.0",
