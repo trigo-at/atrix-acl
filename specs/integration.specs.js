@@ -397,36 +397,6 @@ describe('AtrixACL', () => {
 					cancel:	false,
 					'assign:venue:request': false,
 					'cancel:speaker': false,
-					ruletest: {
-						href: false,
-						error: { message: 'some custom rule error' },
-					},
-				};
-				expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
-				expect(res.statusCode).to.equal(200);
-			});
-
-			it('filters NO _links from response body if they have a custom rule error AND fulfill the ACLs', async () => {
-				const res = await svc.test
-					.get('/prefix/pets/242')
-					.set(testHeaders);
-
-				const allowedLinks = {
-					self: {
-						href: '/pets/242',
-						method: 'get',
-					},
-					update:	{
-						href: '/pets/242',
-						method: 'patch',
-					},
-					cancel:	false,
-					'assign:venue:request': false,
-					'cancel:speaker': false,
-					ruletest: {
-						href: false,
-						error: { message: 'some custom rule error' },
-					},
 				};
 				expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
 				expect(res.statusCode).to.equal(200);
@@ -455,10 +425,6 @@ describe('AtrixACL', () => {
 					'cancel:speaker': {
 						href: '/pets/242/speaker-requests/{requestId}/cancellation',
 						method: 'delete',
-					},
-					ruletest: {
-						href: false,
-						error: { message: 'some custom rule error' },
 					},
 				};
 				expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
@@ -491,10 +457,6 @@ describe('AtrixACL', () => {
 					'cancel:speaker': {
 						href: '/pets/242/speaker-requests/{requestId}/cancellation',
 						method: 'delete',
-					},
-					ruletest: {
-						href: false,
-						error: { message: 'some custom rule error' },
 					},
 				};
 				expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
