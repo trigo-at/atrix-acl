@@ -11,7 +11,7 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test mocha --timeout 30000 $(find . -name '*.specs.js' -not -path './node_modules/*')",
-    "lint": "eslint lib specs"
+    "lint": "eslint lib"
   },
   "keywords": [
     "atrix",
