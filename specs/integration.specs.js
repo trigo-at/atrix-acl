@@ -27,7 +27,7 @@ describe('AtrixACL', () => {
 			const server = svc.service.endpoints.get('http').instance.server;
 
 			const roles = {
-				'pathfinder-app': { roles: ['super-admin', 'ak:admin', 'ak:editor', 'voegb:super-event-viewer'] },
+				'pathfinder-app': { roles: ['super-admin', 'ak:admin', 'ak:editor', 'voegb:super-event-viewer', 'ak:super-admin'] },
 			};
 
 			beforeEach(() => {
