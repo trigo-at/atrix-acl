@@ -138,21 +138,19 @@ describe('AtrixACL', () => {
 				expect(res.body.id).to.equal('242');
 			});
 
-			it('allows POST with correct userId', async () => {
-				const headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken([])}` });
+			it('allows POST with correct userId set in token', async () => {
+				const headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken([], 'test@test', '42')}` });
 				const res = await svc.test
 					.post('/prefix/pets/242')
-					.set(headers)
-					.set('x-pathfinder-userid', '42');
+					.set(headers);
 				expect(res.statusCode).to.equal(200);
 			});
 
 			it('denies with wrong userid', async () => {
-				const headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken([])}` });
+				const headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken([], 'test@test', '44')}` });
 				const res = await svc.test
 					.post('/prefix/pets/242')
-					.set(headers)
-					.set('x-pathfinder-userid', '123');
+					.set(headers);
 				expect(res.statusCode).to.equal(401);
 			});
 		});
