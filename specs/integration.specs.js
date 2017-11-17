@@ -103,6 +103,22 @@ describe('AtrixACL', () => {
 					.post('/prefix/reset');
 				expect(res.statusCode).to.equal(200);
 			});
+
+			it('can use role="*" rule', async () => {
+				const roles = {
+					'pathfinder-app': { roles: [] },
+				};
+				const headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken(roles)}` });
+
+				atrixACL.allowInject = true;
+				atrixACL.setRules([
+					{ role: '*', path: '/*_', method: '*' },
+				]);
+				const res = await svc.test
+					.post('/prefix/pets/242')
+					.set(headers);
+				expect(res.statusCode).to.equal(200);
+			});
 		});
 
 		it('denies GET to / route if no ACLs are defined', async () => {
