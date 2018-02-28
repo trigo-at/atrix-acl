@@ -53,5 +53,6 @@ Object.keys(atrix.services).forEach((serviceName) => {
 module.exports = {
 	service: svc,
 	start: async () => svc.start(),
+	stop: async () => svc.stop(),
 	test: svcs[svc.name],
 };

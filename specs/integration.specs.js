@@ -16,13 +16,51 @@ describe('AtrixACL', () => {
 		await svc.start();
 		atrixACL = svc.service.plugins.acl;
 	});
+	after(async () => {
+		await svc.stop();
+	});
 
 	beforeEach(async () => {
 		atrixACL.setRules([]);
 		atrixACL.setFilterRules([]);
+		atrixACL.setPayloadFilterRules([]);
 	});
 
 	describe('ACLs', () => {
+		describe('payload Filters', () => {
+			const testPayload = {
+				prop: 'val',
+				arrayProp: ['val1', 'val2', 'val3'],
+				objProp: {
+					prop: 'val',
+					arrayProp: ['val1', 'val2', 'val3'],
+				},
+			};
+			it('should not filter anything without rules', async () => {
+				atrixACL.setRules([{ role: 'admin', path: '/*_', method: '*' }]);
+
+				const res = await svc.test
+					.post('/prefix/entity/42')
+					.send(testPayload)
+					.set(testHeaders);
+				expect(res.statusCode).to.equal(200);
+				expect(res.body).to.eql(testPayload);
+			});
+
+
+			it('should filter "omit" properties', async () => {
+				atrixACL.setRules([{ role: 'admin', path: '/*_', method: '*' }]);
+				atrixACL.setPayloadFilterRules([{ role: 'admin', path: '/*_', omit: ['prop', 'objProp'] }]);
+
+				const res = await svc.test
+					.post('/prefix/entity/42')
+					.send(testPayload)
+					.set(testHeaders);
+				expect(res.statusCode).to.equal(200);
+				expect(res.body).to.eql(R.omit(['prop', 'objProp'], testPayload));
+			});
+		});
+
 		describe('User Data', () => {
 			const server = svc.service.endpoints.get('http').instance.server;
 

@@ -23,7 +23,7 @@
     "@trigo/atrix-swagger": "^0.4.11",
     "bluebird": "^3.5.0",
     "boom": "^5.2.0",
-    "joi": "^10.6.0",
+    "joi": "^13.1.2",
     "joi-date-extensions": "^1.0.2",
     "jsonwebtoken": "^7.4.3",
     "ramda": "^0.24.1",
