@@ -24,12 +24,25 @@ describe('User Data', () => {
 		atrixACL.setRules([{ role: 'super-admin', path: '/*_', method: '*' }]);
 	});
 
-	it('should assign user data (roles) to req.auth', async () => {
+	it('should assign user data "effectiveRoles" to req.auth', async () => {
 		const headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken(roles)}` });
 		const res = await server.inject({ method: 'get', url: '/prefix/', headers });
 
 		expect(res.request.auth).to.exist;
 		expect(res.request.auth.effectiveRoles).to.eql(['super-admin']);
+	});
+	it('should assign user data "roles" to req.auth', async () => {
+		const headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak,voegb', authorization: `Bearer ${generateToken(roles)}` });
+		const res = await server.inject({ method: 'get', url: '/prefix/', headers });
+
+		expect(res.request.auth).to.exist;
+		expect(res.request.auth.roles).to.eql([
+			{ tenant: 'pathfinder-app', role: 'super-admin', global: true },
+			{ tenant: 'ak', role: 'admin', global: false },
+			{ tenant: 'ak', role: 'editor', global: false },
+			{ tenant: 'voegb', role: 'super-event-viewer', global: false },
+			{ tenant: 'ak', role: 'super-admin', global: false },
+		]);
 	});
 
 	it('should assign user data (roles) to req.auth based on tenantIds set in header', async () => {
