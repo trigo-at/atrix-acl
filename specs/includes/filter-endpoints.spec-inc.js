@@ -5,9 +5,9 @@
 
 const { expect } = require('chai');
 const R = require('ramda');
-const svc = require('./service');
-const testHeaders = require('./helper/test-headers');
-const generateToken = require('./helper/generate-token');
+const svc = require('../service');
+const testHeaders = require('../helper/test-headers');
+const generateToken = require('../helper/generate-token');
 
 describe('Filter endpoints', () => {
 	let atrixACL;
