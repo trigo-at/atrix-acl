@@ -25,6 +25,7 @@ describe('AtrixACL', () => {
 	});
 
 	describe('ACLs', () => {
+		require('./includes/entity-acls.spec-inc'); //eslint-disable-line
 		require('./includes/user-data.spec-inc'); //eslint-disable-line
 		require('./includes/inject.spec-inc'); //eslint-disable-line
 		require('./includes/filter-endpoints.spec-inc'); //eslint-disable-line
