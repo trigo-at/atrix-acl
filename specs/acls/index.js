@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = () => [
-	{ role: 'admin', path: '/events(/*_)', method: '*' },
 	{ tenant: '*', role: 'admin', path: '/*a', method: '*' },
 	{ tenant: '*', role: 'editor1', path: '/with-inject', method: 'get' },
 	{ tenant: '*', role: 'editor1', path: '/pets/:petId', method: 'put' },
