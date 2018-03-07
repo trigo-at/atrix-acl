@@ -94,4 +94,23 @@ describe('payload Filters', () => {
 		expect(res.body.prop).to.eql('newVal');
 		expect(res.body.objProp).to.eql('newVal');
 	});
+
+	it('it matches path for rule evaluation"', async () => {
+		atrixACL.setRules([
+			{ role: 'admin', path: '/*_', method: '*' },
+			{ role: 'editor', path: '/*_', method: '*' }]);
+
+		atrixACL.setPayloadFilterRules([
+			{
+				path: '/foo(*_)', role: 'editor', key: ['prop', 'objProp'], when: () => true, value: 'newVal',
+			},
+		]);
+		const res = await svc.test
+			.post('/prefix/entity/42')
+			.send(testPayload)
+			.set(headers);
+		expect(res.statusCode).to.equal(200);
+		expect(res.body.prop).not.to.eql('newVal');
+		expect(res.body.objProp).not.to.eql('newVal');
+	});
 });
