@@ -71,7 +71,7 @@ describe('Entity ACLs', () => {
 			.get('/prefix/events/42')
 			.set(headers);
 		expect(res.statusCode).to.equal(200);
-		expect(res.body.entityACLs).to.eql({
+		expect(res.body.entityACL).to.eql({
 			entity: 'event',
 			id: '42',
 			acl: {
@@ -87,7 +87,7 @@ describe('Entity ACLs', () => {
 			.get('/prefix/events/42')
 			.set(headers);
 		expect(res.statusCode).to.equal(200);
-		expect(res.body.entityACLs).to.be.null;
+		expect(res.body.entityACL).to.be.null;
 	});
 
 	it('does not fail with empty acls', async () => {
@@ -96,7 +96,7 @@ describe('Entity ACLs', () => {
 			.get('/prefix/events/42')
 			.set(headers);
 		expect(res.statusCode).to.equal(200);
-		expect(res.body.entityACLs).to.be.null;
+		expect(res.body.entityACL).to.be.null;
 	});
 
 	it('parses ACLs and adds tenantIds', async () => {
@@ -126,7 +126,7 @@ describe('Entity ACLs', () => {
 				.get('/prefix/events/42/budget/22')
 				.set(headers);
 			expect(res.statusCode).to.equal(200);
-			expect(res.body.entityACLs).to.eql({
+			expect(res.body.entityACL).to.eql({
 				entity: 'event',
 				id: '42',
 				acl: {
@@ -141,7 +141,7 @@ describe('Entity ACLs', () => {
 				.get('/prefix/events/42/attendees')
 				.set(headers);
 			expect(res.statusCode).to.equal(200);
-			expect(res.body.entityACLs).to.eql({
+			expect(res.body.entityACL).to.eql({
 				entity: 'event',
 				id: '42',
 				acl: {
@@ -155,7 +155,7 @@ describe('Entity ACLs', () => {
 				.get('/prefix/persons/42/budget/22')
 				.set(headers);
 			expect(res.statusCode).to.equal(200);
-			expect(res.body.entityACLs).to.eql({
+			expect(res.body.entityACL).to.eql({
 				entity: 'budget',
 				id: '22',
 				acl: {
@@ -169,7 +169,7 @@ describe('Entity ACLs', () => {
 				.get('/prefix/persons/21')
 				.set(headers);
 			expect(res.statusCode).to.equal(200);
-			expect(res.body.entityACLs).to.eql({
+			expect(res.body.entityACL).to.eql({
 				entity: 'person',
 				id: '21',
 				acl: {
