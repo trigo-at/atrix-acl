@@ -32,6 +32,8 @@ describe('AtrixACL', () => {
 		require('./includes/filter-fsm-transition-links.spec-inc'); //eslint-disable-line
 		require('./includes/user-id-based-rules.spec-inc'); //eslint-disable-line
 		require('./includes/tenantId-aware-role-evaluation.spec-inc'); //eslint-disable-line
+		require('./includes/has-access.spec-inc'); //eslint-disable-line
+		require('./includes/assert-access.spec-inc'); //eslint-disable-line
 	});
 
 	require('./includes/response-filters.spec-inc'); //eslint-disable-line
