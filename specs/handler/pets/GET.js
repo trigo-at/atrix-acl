@@ -2,7 +2,7 @@ module.exports = (req, reply) => reply({
 	items: [{
 		id: 42,
 		name: 'Pet 42',
-		tenantId: 'tenant1',
+		tenantId: req.query.tenantId || 'ak',
 		photoUrls: ['http://pet_42.pic'],
 		_embedded: {
 			toys: [{
@@ -46,6 +46,7 @@ module.exports = (req, reply) => reply({
 	{
 		id: 242,
 		name: 'Pet 242',
+		tenantId: req.query.tenantId || 'ak',
 		photoUrls: ['http://pet_42.pic'],
 		_embedded: {
 			toys: [{
