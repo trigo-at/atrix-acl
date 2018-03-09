@@ -120,6 +120,22 @@ describe('Entity ACLs', () => {
 		expect(contains({ role: 'special', tenant: 'pathfinder-app', global: true }, res.body.roles)).to.be.true;
 	});
 
+	it('provides access to the route', async () => {
+		headers = merge(testHeaders, {
+			'x-pathfinder-tenant-ids': 'ak,voegb',
+			authorization: `Bearer ${generateToken({
+				'pathfinder-app': {
+					roles: ['voegb:editor'],
+				},
+			})}`,
+		});
+		atrixACL.setRules([{ role: 'admin', path: '/*_', method: '*' }]);
+		const res = await svc.test
+			.get('/prefix/events/42')
+			.set(headers);
+		expect(res.statusCode).to.equal(200);
+	});
+
 	describe('config route matching', () => {
 		it('uses first matching config route', async () => {
 			const res = await svc.test
