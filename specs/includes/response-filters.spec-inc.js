@@ -83,11 +83,8 @@ describe('Response Filters', () => {
 
 		const res = await svc.test.get('/prefix/pets/242').set(testHeaders);
 		expect(res.statusCode).to.equal(200);
-		res.body._embedded.toys.forEach((toy) => {
-			if (toy) {
-				expect(toy.tenantId).to.equal(res.body.tenantId);
-			}
-		});
+		expect(res.body._embedded.toys.length).to.equal(2);
+		expect(res.body._embedded.toys[0].tenantId).to.equal(res.body.tenantId);
 
 		if (res.body._embedded.food && res.body._embedded.food.tenantId) {
 			expect(res.body._embedded.food.tenantId).to.equal(res.body.tenantId);
