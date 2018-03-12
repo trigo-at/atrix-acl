@@ -22,25 +22,31 @@ describe('Entity ACLs', () => {
 
 	beforeEach(async () => {
 		headers = merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak,voegb', authorization: `Bearer ${generateToken(roles)}` });
-		atrixACL.setRules([{ role: 'admin', path: '/*_', method: '*' }]);
-		atrixACL.setEntityACLDefinition([{
+		atrixACL.setRules([{
+			role: 'admin',
+			method: '*',
 			entity: 'event',
 			path: '/events/:id(/*_)',
 			idParam: 'id',
 		}, {
+			role: 'admin',
+			method: '*',
 			entity: 'budget',
 			path: '/events/:id/budget/:bid(/*_)',
 			idParam: 'bid',
 		}, {
+			role: 'admin',
+			method: '*',
 			entity: 'budget',
 			path: '/persons/:id/budget/:bid(/*_)',
 			idParam: 'bid',
 		}, {
+			role: 'admin',
+			method: '*',
 			entity: 'person',
 			path: '/persons/:resId(/*_)',
 			idParam: 'resId',
 		}]);
-
 
 		atrixACL.setEntityACLs([{
 			entity: 'event',
@@ -79,15 +85,6 @@ describe('Entity ACLs', () => {
 				roles: ['special', 'goed:viewer', 'goed:admin', 'goed:viewer', 'goed:admin'],
 			},
 		});
-	});
-
-	it('does not fail with empty config', async () => {
-		atrixACL.setEntityACLDefinition([]);
-		const res = await svc.test
-			.get('/prefix/events/42')
-			.set(headers);
-		expect(res.statusCode).to.equal(200);
-		expect(res.body.entityACL).to.be.null;
 	});
 
 	it('does not fail with empty acls', async () => {
@@ -129,7 +126,6 @@ describe('Entity ACLs', () => {
 				},
 			})}`,
 		});
-		atrixACL.setRules([{ role: 'admin', path: '/*_', method: '*' }]);
 		const res = await svc.test
 			.get('/prefix/events/42')
 			.set(headers);
