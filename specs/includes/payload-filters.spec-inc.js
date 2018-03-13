@@ -3,7 +3,7 @@
 /* eslint-env node, mocha */
 /* eslint no-unused-expressions: 0, arrow-body-style: 0 */
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 const R = require('ramda');
 const tmpObj = require('../tmp-obj');
 const svc = require('../service');
@@ -37,7 +37,7 @@ describe('payload Filters', () => {
 		},
 	};
 	it('should not filter anything without rules', async () => {
-		atrixACL.setRules([{ role: 'admin', path: '/*_', method: '*' }]);
+		atrixACL.setRules([{role: 'admin', path: '/*_', method: '*'}]);
 
 		const res = await svc.test
 			.post('/prefix/entity/42')
@@ -49,18 +49,21 @@ describe('payload Filters', () => {
 
 	it('should filter & remove propertiesi with "when" function => true, valu => undefined', async () => {
 		atrixACL.setRules([
-			{ role: 'admin', path: '/*_', method: '*' },
-			{ role: 'editor', path: '/*_', method: '*' }]);
+			{role: 'admin', path: '/*_', method: '*'},
+			{role: 'editor', path: '/*_', method: '*'},
+		]);
 
 		atrixACL.setPayloadFilterRules([
 			{
 				role: 'editor',
 				key: ['*'],
-				when: ({
-					path, value,
-				}) => {
+				when: ({path, value}) => {
 					if (path.match(/(prop|objProp)/)) return true;
-					if (path.match(/arrayProp\.\d/) && ['val2', 'val42'].indexOf(value) !== -1) return true;
+					if (
+						path.match(/arrayProp\.\d/) &&
+						['val2', 'val42'].indexOf(value) !== -1
+					)
+						return true;
 					return false;
 				},
 				value: undefined,
@@ -78,12 +81,16 @@ describe('payload Filters', () => {
 
 	it('should set properties "when" => true, value => "newVal"', async () => {
 		atrixACL.setRules([
-			{ role: 'admin', path: '/*_', method: '*' },
-			{ role: 'editor', path: '/*_', method: '*' }]);
+			{role: 'admin', path: '/*_', method: '*'},
+			{role: 'editor', path: '/*_', method: '*'},
+		]);
 
 		atrixACL.setPayloadFilterRules([
 			{
-				role: 'editor', key: ['prop', 'objProp'], when: () => true, value: 'newVal',
+				role: 'editor',
+				key: ['prop', 'objProp'],
+				when: () => true,
+				value: 'newVal',
 			},
 		]);
 		const res = await svc.test
@@ -97,12 +104,17 @@ describe('payload Filters', () => {
 
 	it('it matches path for rule evaluation"', async () => {
 		atrixACL.setRules([
-			{ role: 'admin', path: '/*_', method: '*' },
-			{ role: 'editor', path: '/*_', method: '*' }]);
+			{role: 'admin', path: '/*_', method: '*'},
+			{role: 'editor', path: '/*_', method: '*'},
+		]);
 
 		atrixACL.setPayloadFilterRules([
 			{
-				path: '/foo(*_)', role: 'editor', key: ['prop', 'objProp'], when: () => true, value: 'newVal',
+				path: '/foo(*_)',
+				role: 'editor',
+				key: ['prop', 'objProp'],
+				when: () => true,
+				value: 'newVal',
 			},
 		]);
 		const res = await svc.test

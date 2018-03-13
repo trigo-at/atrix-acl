@@ -3,11 +3,11 @@
 /* eslint-env node, mocha */
 /* eslint no-unused-expressions: 0, arrow-body-style: 0, one-var: 0, one-var-declaration-per-line: 0 */
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 const svc = require('../service');
 const testHeaders = require('../helper/test-headers');
 const generateToken = require('../helper/generate-token');
-const { merge } = require('ramda');
+const {merge} = require('ramda');
 
 describe('Filter FSM transition links', () => {
 	let atrixACL, headers;
@@ -20,14 +20,17 @@ describe('Filter FSM transition links', () => {
 		atrixACL = svc.service.plugins.acl;
 	});
 	beforeEach(async () => {
-		atrixACL.setRules([{ role: 'admin', path: '/pets/242', method: '*' }]);
-		headers = merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak,voegb', authorization: `Bearer ${generateToken(roles)}` });
+		atrixACL.setRules([{role: 'admin', path: '/pets/242', method: '*'}]);
+		headers = merge(testHeaders, {
+			'x-pathfinder-tenant-ids': 'ak,voegb',
+			authorization: `Bearer ${generateToken(roles)}`,
+		});
 	});
 
 	it('filters _links based on resource without tenantId', async () => {
 		atrixACL.setRules([
-			{ role: 'admin', path: '/pets/242', method: 'get' },
-			{ role: 'admin', transition: '(*_)', method: '*' },
+			{role: 'admin', path: '/pets/242', method: 'get'},
+			{role: 'admin', transition: '(*_)', method: '*'},
 		]);
 		const res = await svc.test
 			.get('/prefix/pets/242?tenantId=__delete__')
@@ -38,11 +41,11 @@ describe('Filter FSM transition links', () => {
 				href: '/pets/242',
 				method: 'get',
 			},
-			update:	{
+			update: {
 				href: '/pets/242',
 				method: 'patch',
 			},
-			cancel:	{
+			cancel: {
 				href: '/pets/242/cancellation',
 				method: 'put',
 			},
@@ -61,8 +64,8 @@ describe('Filter FSM transition links', () => {
 	});
 	it('filters _links based on the resource tenantId=_all is handled like no tenant Id', async () => {
 		atrixACL.setRules([
-			{ role: 'admin', path: '/pets/242', method: 'get' },
-			{ role: 'admin', transition: '(*_)', method: '*' },
+			{role: 'admin', path: '/pets/242', method: 'get'},
+			{role: 'admin', transition: '(*_)', method: '*'},
 		]);
 		const res = await svc.test
 			.get('/prefix/pets/242?tenantId=_all')
@@ -73,11 +76,11 @@ describe('Filter FSM transition links', () => {
 				href: '/pets/242',
 				method: 'get',
 			},
-			update:	{
+			update: {
 				href: '/pets/242',
 				method: 'patch',
 			},
-			cancel:	{
+			cancel: {
 				href: '/pets/242/cancellation',
 				method: 'put',
 			},
@@ -103,8 +106,8 @@ describe('Filter FSM transition links', () => {
 			})}`,
 		});
 		atrixACL.setRules([
-			{ role: 'editor', path: '/pets/242', method: 'get' },
-			{ role: 'admin', transition: 'cancel(:*_)', method: '*' },
+			{role: 'editor', path: '/pets/242', method: 'get'},
+			{role: 'admin', transition: 'cancel(:*_)', method: '*'},
 		]);
 		const res = await svc.test
 			.get('/prefix/pets/242?tenantId=voegb')
@@ -116,7 +119,7 @@ describe('Filter FSM transition links', () => {
 				method: 'get',
 			},
 			update: false,
-			cancel:	false,
+			cancel: false,
 			'assign:venue:request': false,
 			'cancel:speaker': false,
 		};
@@ -133,8 +136,8 @@ describe('Filter FSM transition links', () => {
 			})}`,
 		});
 		atrixACL.setRules([
-			{ role: 'editor', path: '/pets/242', method: 'get' },
-			{ role: 'admin', transition: '(*_)', method: '*' },
+			{role: 'editor', path: '/pets/242', method: 'get'},
+			{role: 'admin', transition: '(*_)', method: '*'},
 		]);
 		const res = await svc.test
 			.get('/prefix/pets/242?tenantId=ak')
@@ -145,11 +148,11 @@ describe('Filter FSM transition links', () => {
 				href: '/pets/242',
 				method: 'get',
 			},
-			update:	{
+			update: {
 				href: '/pets/242',
 				method: 'patch',
 			},
-			cancel:	{
+			cancel: {
 				href: '/pets/242/cancellation',
 				method: 'put',
 			},
@@ -176,8 +179,8 @@ describe('Filter FSM transition links', () => {
 			})}`,
 		});
 		atrixACL.setRules([
-			{ role: 'admin', path: '/pets/242', method: 'get' },
-			{ role: 'admin', transition: '(*_)', method: '*' },
+			{role: 'admin', path: '/pets/242', method: 'get'},
+			{role: 'admin', transition: '(*_)', method: '*'},
 		]);
 		const res = await svc.test
 			.get('/prefix/pets/242?tenantId=ak')
@@ -188,11 +191,11 @@ describe('Filter FSM transition links', () => {
 				href: '/pets/242',
 				method: 'get',
 			},
-			update:	{
+			update: {
 				href: '/pets/242',
 				method: 'patch',
 			},
-			cancel:	{
+			cancel: {
 				href: '/pets/242/cancellation',
 				method: 'put',
 			},
@@ -210,118 +213,7 @@ describe('Filter FSM transition links', () => {
 	});
 
 	it('filters _links (hrefs) from response body which are not allowed due to ACLs', async () => {
-		const res = await svc.test
-			.get('/prefix/pets/242')
-			.set(headers);
-
-		const allowedLinks = {
-			self: {
-				href: '/pets/242',
-				method: 'get',
-			},
-			update:	{
-				href: '/pets/242',
-				method: 'patch',
-			},
-			cancel:	false,
-			'assign:venue:request': false,
-			'cancel:speaker': false,
-		};
-			expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.statusCode).to.equal(200);
-	});
-
-	it('filters _links recursive', async () => {
-		const res = await svc.test
-			.get('/prefix/pets/242')
-			.set(headers);
-
-		const allowedLinks = {
-			self: {
-				href: '/pets/242',
-				method: 'get',
-			},
-			update:	{
-				href: '/pets/242',
-				method: 'patch',
-			},
-			cancel:	false,
-			'assign:venue:request': false,
-			'cancel:speaker': false,
-		};
-		const allNotAllowed = {
-			self: false,
-			update:	false,
-			cancel:	false,
-			'assign:venue:request': false,
-			'cancel:speaker': false,
-		};
-		expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.body._embedded.toys[0]._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.body._embedded.toys[1]._links).to.eql(allNotAllowed); //eslint-disable-line
-		expect(res.body._embedded.toys[2]._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.body._embedded.toys[2]._embedded.toys[0]._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.body._embedded.toys[2]._embedded.toys[1]._links).to.eql(allNotAllowed); //eslint-disable-line
-		expect(res.body._embedded.toys[2]._embedded.toys[2]._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.body._embedded.beer._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.body._embedded.beer._embedded.vine._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.statusCode).to.equal(200);
-	});
-
-	it('applies document _acl.tenantId before filtering links', async () => {
-		const res = await svc.test
-			.get('/prefix/pets/242')
-			.set(headers);
-
-		const allowedLinks = {
-			self: {
-				href: '/pets/242',
-				method: 'get',
-			},
-			update:	{
-				href: '/pets/242',
-				method: 'patch',
-			},
-			cancel:	false,
-			'assign:venue:request': false,
-			'cancel:speaker': false,
-		};
-		const allNotAllowed = {
-			self: false,
-			update:	false,
-			cancel:	false,
-			'assign:venue:request': false,
-			'cancel:speaker': false,
-		};
-		expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.body._embedded.toys[0]._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.body._embedded.toys[1]._links).to.eql(allNotAllowed); //eslint-disable-line
-		expect(res.body._embedded.toys[2]._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.body._embedded.toys[2]._embedded.toys[0]._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.body._embedded.toys[2]._embedded.toys[1]._links).to.eql(allNotAllowed); //eslint-disable-line
-		expect(res.body._embedded.toys[2]._embedded.toys[2]._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.body._embedded.toys[2]._embedded.toys[3]._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.body._embedded.beer._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.body._embedded.beer._embedded.vine._links).to.eql(allowedLinks); //eslint-disable-line
-		expect(res.statusCode).to.equal(200);
-	});
-
-	it('applies document _acl.roles before filtering links', async () => {
-		atrixACL.setRules([
-			{ role: 'viewer', path: '/pets/242', method: 'get' },
-			{ role: 'user', path: '/pets/242', method: 'patch' },
-		]);
-		headers = merge(testHeaders, {
-			'x-pathfinder-tenant-ids': 'ak,voegb',
-			authorization: `Bearer ${generateToken({
-				'pathfinder-app': {
-					roles: ['ak:viewer'],
-				},
-			})}`,
-		});
-		const res = await svc.test
-			.get('/prefix/pets/242')
-			.set(headers);
+		const res = await svc.test.get('/prefix/pets/242').set(headers);
 
 		const allowedLinks = {
 			self: {
@@ -332,63 +224,182 @@ describe('Filter FSM transition links', () => {
 				href: '/pets/242',
 				method: 'patch',
 			},
-			cancel:	false,
+			cancel: false,
+			'assign:venue:request': false,
+			'cancel:speaker': false,
+		};
+		expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.statusCode).to.equal(200);
+	});
+
+	it('filters _links recursive', async () => {
+		const res = await svc.test.get('/prefix/pets/242').set(headers);
+
+		const allowedLinks = {
+			self: {
+				href: '/pets/242',
+				method: 'get',
+			},
+			update: {
+				href: '/pets/242',
+				method: 'patch',
+			},
+			cancel: false,
+			'assign:venue:request': false,
+			'cancel:speaker': false,
+		};
+		const allNotAllowed = {
+			self: false,
+			update: false,
+			cancel: false,
+			'assign:venue:request': false,
+			'cancel:speaker': false,
+		};
+		expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.toys[0]._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.toys[1]._links).to.eql(allNotAllowed); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._embedded.toys[0]._links).to.eql(
+			allowedLinks
+		); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._embedded.toys[1]._links).to.eql(
+			allNotAllowed
+		); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._embedded.toys[2]._links).to.eql(
+			allowedLinks
+		); //eslint-disable-line
+		expect(res.body._embedded.beer._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.beer._embedded.vine._links).to.eql(
+			allowedLinks
+		); //eslint-disable-line
+		expect(res.statusCode).to.equal(200);
+	});
+
+	it('applies document _acl.tenantId before filtering links', async () => {
+		const res = await svc.test.get('/prefix/pets/242').set(headers);
+
+		const allowedLinks = {
+			self: {
+				href: '/pets/242',
+				method: 'get',
+			},
+			update: {
+				href: '/pets/242',
+				method: 'patch',
+			},
+			cancel: false,
+			'assign:venue:request': false,
+			'cancel:speaker': false,
+		};
+		const allNotAllowed = {
+			self: false,
+			update: false,
+			cancel: false,
+			'assign:venue:request': false,
+			'cancel:speaker': false,
+		};
+		expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.toys[0]._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.toys[1]._links).to.eql(allNotAllowed); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._embedded.toys[0]._links).to.eql(
+			allowedLinks
+		); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._embedded.toys[1]._links).to.eql(
+			allNotAllowed
+		); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._embedded.toys[2]._links).to.eql(
+			allowedLinks
+		); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._embedded.toys[3]._links).to.eql(
+			allowedLinks
+		); //eslint-disable-line
+		expect(res.body._embedded.beer._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.beer._embedded.vine._links).to.eql(
+			allowedLinks
+		); //eslint-disable-line
+		expect(res.statusCode).to.equal(200);
+	});
+
+	it('applies document _acl.roles before filtering links', async () => {
+		atrixACL.setRules([
+			{role: 'viewer', path: '/pets/242', method: 'get'},
+			{role: 'user', path: '/pets/242', method: 'patch'},
+		]);
+		headers = merge(testHeaders, {
+			'x-pathfinder-tenant-ids': 'ak,voegb',
+			authorization: `Bearer ${generateToken({
+				'pathfinder-app': {
+					roles: ['ak:viewer'],
+				},
+			})}`,
+		});
+		const res = await svc.test.get('/prefix/pets/242').set(headers);
+
+		const allowedLinks = {
+			self: {
+				href: '/pets/242',
+				method: 'get',
+			},
+			update: {
+				href: '/pets/242',
+				method: 'patch',
+			},
+			cancel: false,
 			'assign:venue:request': false,
 			'cancel:speaker': false,
 		};
 		console.log(res.body);
 		expect(res.statusCode).to.equal(200);
-		expect(res.body._embedded.toys[2]._embedded.toys[4]._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._embedded.toys[4]._links).to.eql(
+			allowedLinks
+		); //eslint-disable-line
 	});
 
 	it('filters _links (hrefs + transitions) from response body which are not allowed due to ACLs', async () => {
 		atrixACL.setRules([
-			{ role: 'admin', path: '/pets/242', method: '*' },
-			{ role: 'admin', transition: 'cancel:speaker', method: '*' },
+			{role: 'admin', path: '/pets/242', method: '*'},
+			{role: 'admin', transition: 'cancel:speaker', method: '*'},
 		]);
-		const res = await svc.test
-			.get('/prefix/pets/242')
-			.set(headers);
+		const res = await svc.test.get('/prefix/pets/242').set(headers);
 
 		const allowedLinks = {
 			self: {
 				href: '/pets/242',
 				method: 'get',
 			},
-			update:	{
+			update: {
 				href: '/pets/242',
 				method: 'patch',
 			},
-			cancel:	false,
+			cancel: false,
 			'assign:venue:request': false,
 			'cancel:speaker': {
 				href: '/pets/242/speaker-requests/{requestId}/cancellation',
 				method: 'delete',
 			},
 		};
-			expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
 		expect(res.statusCode).to.equal(200);
 	});
 
 	it('filters _links (hrefs + wildcard transitions) from response body which are not allowed due to ACLs', async () => {
 		atrixACL.setRules([
-			{ role: 'admin', path: '/pets/242', method: '*' },
-			{ role: 'admin', transition: 'cancel(:*_)', method: '*' },
+			{role: 'admin', path: '/pets/242', method: '*'},
+			{role: 'admin', transition: 'cancel(:*_)', method: '*'},
 		]);
-		const res = await svc.test
-			.get('/prefix/pets/242')
-			.set(headers);
+		const res = await svc.test.get('/prefix/pets/242').set(headers);
 
 		const allowedLinks = {
 			self: {
 				href: '/pets/242',
 				method: 'get',
 			},
-			update:	{
+			update: {
 				href: '/pets/242',
 				method: 'patch',
 			},
-			cancel:	{
+			cancel: {
 				href: '/pets/242/cancellation',
 				method: 'put',
 			},
@@ -398,30 +409,28 @@ describe('Filter FSM transition links', () => {
 				method: 'delete',
 			},
 		};
-			expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
 		expect(res.statusCode).to.equal(200);
 	});
 
 	it('filters _links (hrefs + wildcard transitions) from response body array which are not allowed due to ACLs', async () => {
 		atrixACL.setRules([
-			{ role: 'admin', path: '/pets', method: '*' },
-			{ role: 'admin', path: '/pets/242', method: '*' },
-			{ role: 'admin', transition: 'cancel(:*_)', method: '*' },
+			{role: 'admin', path: '/pets', method: '*'},
+			{role: 'admin', path: '/pets/242', method: '*'},
+			{role: 'admin', transition: 'cancel(:*_)', method: '*'},
 		]);
-		const res = await svc.test
-			.get('/prefix/pets')
-			.set(headers);
+		const res = await svc.test.get('/prefix/pets').set(headers);
 
 		const allowedLinks = {
 			self: {
 				href: '/pets/242',
 				method: 'get',
 			},
-			update:	{
+			update: {
 				href: '/pets/242',
 				method: 'patch',
 			},
-			cancel:	{
+			cancel: {
 				href: '/pets/242/cancellation',
 				method: 'put',
 			},
@@ -431,8 +440,8 @@ describe('Filter FSM transition links', () => {
 				method: 'delete',
 			},
 		};
-		res.body.items.forEach((pet) => {
-				expect(pet._links).to.eql(allowedLinks); //eslint-disable-line
+		res.body.items.forEach(pet => {
+			expect(pet._links).to.eql(allowedLinks); //eslint-disable-line
 		});
 
 		expect(res.statusCode).to.equal(200);

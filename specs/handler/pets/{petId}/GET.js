@@ -7,249 +7,268 @@ const getResource = (petId, tenantId) => {
 		tenantId: tenantId || 'ak',
 		photoUrls: ['http://pet_42.pic'],
 		_embedded: {
-			toys: [{
-				id: 42,
-				name: 'foo',
-				tenantId: tenantId || 'ak',
-				_links: {
-					self: {
-						href: '/pets/242',
-						method: 'get',
-					},
-					update:	{
-						href: '/pets/242',
-						method: 'patch',
-					},
-					cancel:	{
-						href: '/pets/242/cancellation',
-						method: 'put',
-					},
-					'assign:venue:request': {
-						href: '/pets/242/venue-requests',
-						method: 'post',
-					},
-					'cancel:speaker': {
-						href: '/pets/242/speaker-requests/{requestId}/cancellation',
-						method: 'delete',
-					},
-				},
-			}, {
-				id: 32,
-				tenantId: 'tenant2',
-				name: 'bar',
-				_links: {
-					self: {
-						href: '/pets/242',
-						method: 'get',
-					},
-					update:	{
-						href: '/pets/242',
-						method: 'patch',
-					},
-					cancel:	{
-						href: '/pets/242/cancellation',
-						method: 'put',
-					},
-					'assign:venue:request': {
-						href: '/pets/242/venue-requests',
-						method: 'post',
-					},
-					'cancel:speaker': {
-						href: '/pets/242/speaker-requests/{requestId}/cancellation',
-						method: 'delete',
-					},
-				},
-			}, {
-				id: 42,
-				name: 'foo',
-				_links: {
-					self: {
-						href: '/pets/242',
-						method: 'get',
-					},
-					update:	{
-						href: '/pets/242',
-						method: 'patch',
-					},
-					cancel:	{
-						href: '/pets/242/cancellation',
-						method: 'put',
-					},
-					'assign:venue:request': {
-						href: '/pets/242/venue-requests',
-						method: 'post',
-					},
-					'cancel:speaker': {
-						href: '/pets/242/speaker-requests/{requestId}/cancellation',
-						method: 'delete',
-					},
-				},
-				_embedded: {
-					toys: [{
-						id: 42,
-						name: 'foo',
-						tenantId: tenantId || 'ak',
-						_links: {
-							self: {
-								href: '/pets/242',
-								method: 'get',
-							},
-							update:	{
-								href: '/pets/242',
-								method: 'patch',
-							},
-							cancel:	{
-								href: '/pets/242/cancellation',
-								method: 'put',
-							},
-							'assign:venue:request': {
-								href: '/pets/242/venue-requests',
-								method: 'post',
-							},
-							'cancel:speaker': {
-								href: '/pets/242/speaker-requests/{requestId}/cancellation',
-								method: 'delete',
-							},
+			toys: [
+				{
+					id: 42,
+					name: 'foo',
+					tenantId: tenantId || 'ak',
+					_links: {
+						self: {
+							href: '/pets/242',
+							method: 'get',
 						},
-					}, {
-						id: 32,
-						tenantId: 'tenant2',
-						name: 'bar',
-						_links: {
-							self: {
-								href: '/pets/242',
-								method: 'get',
-							},
-							update:	{
-								href: '/pets/242',
-								method: 'patch',
-							},
-							cancel:	{
-								href: '/pets/242/cancellation',
-								method: 'put',
-							},
-							'assign:venue:request': {
-								href: '/pets/242/venue-requests',
-								method: 'post',
-							},
-							'cancel:speaker': {
-								href: '/pets/242/speaker-requests/{requestId}/cancellation',
-								method: 'delete',
-							},
+						update: {
+							href: '/pets/242',
+							method: 'patch',
 						},
-					}, {
-						id: 42,
-						name: 'foo',
-						_links: {
-							self: {
-								href: '/pets/242',
-								method: 'get',
-							},
-							update:	{
-								href: '/pets/242',
-								method: 'patch',
-							},
-							cancel:	{
-								href: '/pets/242/cancellation',
-								method: 'put',
-							},
-							'assign:venue:request': {
-								href: '/pets/242/venue-requests',
-								method: 'post',
-							},
-							'cancel:speaker': {
-								href: '/pets/242/speaker-requests/{requestId}/cancellation',
-								method: 'delete',
-							},
+						cancel: {
+							href: '/pets/242/cancellation',
+							method: 'put',
 						},
-					}, {
-						id: 42,
-						name: 'foo',
-						tenantId: 'tenant2',
-						_acl: {
-							tenantIds: ['ak'],
+						'assign:venue:request': {
+							href: '/pets/242/venue-requests',
+							method: 'post',
 						},
-						_links: {
-							self: {
-								href: '/pets/242',
-								method: 'get',
-							},
-							update:	{
-								href: '/pets/242',
-								method: 'patch',
-							},
-							cancel:	{
-								href: '/pets/242/cancellation',
-								method: 'put',
-							},
-							'assign:venue:request': {
-								href: '/pets/242/venue-requests',
-								method: 'post',
-							},
-							'cancel:speaker': {
-								href: '/pets/242/speaker-requests/{requestId}/cancellation',
-								method: 'delete',
-							},
-						},
-					}, {
-						id: 42,
-						name: 'foo',
-						tenantId: 'tenant2',
-						_acl: {
-							roles: ['ak:user'],
-						},
-						_links: {
-							self: {
-								href: '/pets/242',
-								method: 'get',
-							},
-							update:	{
-								href: '/pets/242',
-								method: 'patch',
-							},
-							cancel:	{
-								href: '/pets/242/cancellation',
-								method: 'put',
-							},
-							'assign:venue:request': {
-								href: '/pets/242/venue-requests',
-								method: 'post',
-							},
-							'cancel:speaker': {
-								href: '/pets/242/speaker-requests/{requestId}/cancellation',
-								method: 'delete',
-							},
-						},
-					}],
-					food: {
-						id: 123,
-						tenantId: 'tenant2',
-						name: 'salami',
-						_links: {
-							self: {
-								href: '/pets/242',
-								method: 'get',
-							},
-							update:	{
-								href: '/pets/242',
-								method: 'patch',
-							},
-							cancel:	{
-								href: '/pets/242/cancellation',
-								method: 'put',
-							},
-							'assign:venue:request': {
-								href: '/pets/242/venue-requests',
-								method: 'post',
-							},
-							'cancel:speaker': {
-								href: '/pets/242/speaker-requests/{requestId}/cancellation',
-								method: 'delete',
-							},
+						'cancel:speaker': {
+							href:
+								'/pets/242/speaker-requests/{requestId}/cancellation',
+							method: 'delete',
 						},
 					},
 				},
-			}],
+				{
+					id: 32,
+					tenantId: 'tenant2',
+					name: 'bar',
+					_links: {
+						self: {
+							href: '/pets/242',
+							method: 'get',
+						},
+						update: {
+							href: '/pets/242',
+							method: 'patch',
+						},
+						cancel: {
+							href: '/pets/242/cancellation',
+							method: 'put',
+						},
+						'assign:venue:request': {
+							href: '/pets/242/venue-requests',
+							method: 'post',
+						},
+						'cancel:speaker': {
+							href:
+								'/pets/242/speaker-requests/{requestId}/cancellation',
+							method: 'delete',
+						},
+					},
+				},
+				{
+					id: 42,
+					name: 'foo',
+					_links: {
+						self: {
+							href: '/pets/242',
+							method: 'get',
+						},
+						update: {
+							href: '/pets/242',
+							method: 'patch',
+						},
+						cancel: {
+							href: '/pets/242/cancellation',
+							method: 'put',
+						},
+						'assign:venue:request': {
+							href: '/pets/242/venue-requests',
+							method: 'post',
+						},
+						'cancel:speaker': {
+							href:
+								'/pets/242/speaker-requests/{requestId}/cancellation',
+							method: 'delete',
+						},
+					},
+					_embedded: {
+						toys: [
+							{
+								id: 42,
+								name: 'foo',
+								tenantId: tenantId || 'ak',
+								_links: {
+									self: {
+										href: '/pets/242',
+										method: 'get',
+									},
+									update: {
+										href: '/pets/242',
+										method: 'patch',
+									},
+									cancel: {
+										href: '/pets/242/cancellation',
+										method: 'put',
+									},
+									'assign:venue:request': {
+										href: '/pets/242/venue-requests',
+										method: 'post',
+									},
+									'cancel:speaker': {
+										href:
+											'/pets/242/speaker-requests/{requestId}/cancellation',
+										method: 'delete',
+									},
+								},
+							},
+							{
+								id: 32,
+								tenantId: 'tenant2',
+								name: 'bar',
+								_links: {
+									self: {
+										href: '/pets/242',
+										method: 'get',
+									},
+									update: {
+										href: '/pets/242',
+										method: 'patch',
+									},
+									cancel: {
+										href: '/pets/242/cancellation',
+										method: 'put',
+									},
+									'assign:venue:request': {
+										href: '/pets/242/venue-requests',
+										method: 'post',
+									},
+									'cancel:speaker': {
+										href:
+											'/pets/242/speaker-requests/{requestId}/cancellation',
+										method: 'delete',
+									},
+								},
+							},
+							{
+								id: 42,
+								name: 'foo',
+								_links: {
+									self: {
+										href: '/pets/242',
+										method: 'get',
+									},
+									update: {
+										href: '/pets/242',
+										method: 'patch',
+									},
+									cancel: {
+										href: '/pets/242/cancellation',
+										method: 'put',
+									},
+									'assign:venue:request': {
+										href: '/pets/242/venue-requests',
+										method: 'post',
+									},
+									'cancel:speaker': {
+										href:
+											'/pets/242/speaker-requests/{requestId}/cancellation',
+										method: 'delete',
+									},
+								},
+							},
+							{
+								id: 42,
+								name: 'foo',
+								tenantId: 'tenant2',
+								_acl: {
+									tenantIds: ['ak'],
+								},
+								_links: {
+									self: {
+										href: '/pets/242',
+										method: 'get',
+									},
+									update: {
+										href: '/pets/242',
+										method: 'patch',
+									},
+									cancel: {
+										href: '/pets/242/cancellation',
+										method: 'put',
+									},
+									'assign:venue:request': {
+										href: '/pets/242/venue-requests',
+										method: 'post',
+									},
+									'cancel:speaker': {
+										href:
+											'/pets/242/speaker-requests/{requestId}/cancellation',
+										method: 'delete',
+									},
+								},
+							},
+							{
+								id: 42,
+								name: 'foo',
+								tenantId: 'tenant2',
+								_acl: {
+									roles: ['ak:user'],
+								},
+								_links: {
+									self: {
+										href: '/pets/242',
+										method: 'get',
+									},
+									update: {
+										href: '/pets/242',
+										method: 'patch',
+									},
+									cancel: {
+										href: '/pets/242/cancellation',
+										method: 'put',
+									},
+									'assign:venue:request': {
+										href: '/pets/242/venue-requests',
+										method: 'post',
+									},
+									'cancel:speaker': {
+										href:
+											'/pets/242/speaker-requests/{requestId}/cancellation',
+										method: 'delete',
+									},
+								},
+							},
+						],
+						food: {
+							id: 123,
+							tenantId: 'tenant2',
+							name: 'salami',
+							_links: {
+								self: {
+									href: '/pets/242',
+									method: 'get',
+								},
+								update: {
+									href: '/pets/242',
+									method: 'patch',
+								},
+								cancel: {
+									href: '/pets/242/cancellation',
+									method: 'put',
+								},
+								'assign:venue:request': {
+									href: '/pets/242/venue-requests',
+									method: 'post',
+								},
+								'cancel:speaker': {
+									href:
+										'/pets/242/speaker-requests/{requestId}/cancellation',
+									method: 'delete',
+								},
+							},
+						},
+					},
+				},
+			],
 			beer: {
 				id: 123,
 				name: 'salami',
@@ -258,11 +277,11 @@ const getResource = (petId, tenantId) => {
 						href: '/pets/242',
 						method: 'get',
 					},
-					update:	{
+					update: {
 						href: '/pets/242',
 						method: 'patch',
 					},
-					cancel:	{
+					cancel: {
 						href: '/pets/242/cancellation',
 						method: 'put',
 					},
@@ -271,7 +290,8 @@ const getResource = (petId, tenantId) => {
 						method: 'post',
 					},
 					'cancel:speaker': {
-						href: '/pets/242/speaker-requests/{requestId}/cancellation',
+						href:
+							'/pets/242/speaker-requests/{requestId}/cancellation',
 						method: 'delete',
 					},
 				},
@@ -284,11 +304,11 @@ const getResource = (petId, tenantId) => {
 								href: '/pets/242',
 								method: 'get',
 							},
-							update:	{
+							update: {
 								href: '/pets/242',
 								method: 'patch',
 							},
-							cancel:	{
+							cancel: {
 								href: '/pets/242/cancellation',
 								method: 'put',
 							},
@@ -297,12 +317,12 @@ const getResource = (petId, tenantId) => {
 								method: 'post',
 							},
 							'cancel:speaker': {
-								href: '/pets/242/speaker-requests/{requestId}/cancellation',
+								href:
+									'/pets/242/speaker-requests/{requestId}/cancellation',
 								method: 'delete',
 							},
 						},
 					},
-
 				},
 			},
 			food: {
@@ -314,11 +334,11 @@ const getResource = (petId, tenantId) => {
 						href: '/pets/242',
 						method: 'get',
 					},
-					update:	{
+					update: {
 						href: '/pets/242',
 						method: 'patch',
 					},
-					cancel:	{
+					cancel: {
 						href: '/pets/242/cancellation',
 						method: 'put',
 					},
@@ -327,7 +347,8 @@ const getResource = (petId, tenantId) => {
 						method: 'post',
 					},
 					'cancel:speaker': {
-						href: '/pets/242/speaker-requests/{requestId}/cancellation',
+						href:
+							'/pets/242/speaker-requests/{requestId}/cancellation',
 						method: 'delete',
 					},
 				},
@@ -338,11 +359,11 @@ const getResource = (petId, tenantId) => {
 				href: '/pets/242',
 				method: 'get',
 			},
-			update:	{
+			update: {
 				href: '/pets/242',
 				method: 'patch',
 			},
-			cancel:	{
+			cancel: {
 				href: '/pets/242/cancellation',
 				method: 'put',
 			},

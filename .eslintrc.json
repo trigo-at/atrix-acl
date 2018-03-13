@@ -1,3 +1,18 @@
 {
-	"extends": "trigo"
+    "extends": [
+        "trigo",
+        "prettier"
+    ],
+    "plugins": [
+        "prettier"
+    ],
+    "env": {
+        "node": true
+    },
+    "parserOptions": {
+        "sourceType": "module"
+    },
+    "rules": {
+        "prettier/prettier": ["error"]
+    }
 }

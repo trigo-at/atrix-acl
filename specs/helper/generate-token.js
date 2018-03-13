@@ -6,7 +6,11 @@ const config = {
 	jwtDevTokenSecret: 'jwt-token-secret',
 };
 
-module.exports = (tenantIds = ['pathfinder-app'], username = 'john.doe@test.com', userId) => {
+module.exports = (
+	tenantIds = ['pathfinder-app'],
+	username = 'john.doe@test.com',
+	userId
+) => {
 	let resourceAccess = tenantIds || {
 		'pathfinder-app': {
 			roles: ['admin'],
@@ -15,7 +19,9 @@ module.exports = (tenantIds = ['pathfinder-app'], username = 'john.doe@test.com'
 	if (Array.isArray(tenantIds)) {
 		resourceAccess = {
 			'pathfinder-app': {
-				roles: tenantIds.map(tid => (tid === 'pathfinder-app' ? 'admin' : `${tid}:admin`)),
+				roles: tenantIds.map(
+					tid => (tid === 'pathfinder-app' ? 'admin' : `${tid}:admin`)
+				),
 			},
 		};
 	}
@@ -29,5 +35,8 @@ module.exports = (tenantIds = ['pathfinder-app'], username = 'john.doe@test.com'
 	if (userId) {
 		credentials.userId = userId;
 	}
-	return jwt.sign(credentials, config.jwtDevTokenSecret, { expiresIn: '10 y', algorithm: 'HS256' });
+	return jwt.sign(credentials, config.jwtDevTokenSecret, {
+		expiresIn: '10 y',
+		algorithm: 'HS256',
+	});
 };

@@ -3,7 +3,7 @@
 /* eslint-env node, mocha */
 /* eslint no-unused-expressions: 0, arrow-body-style: 0 */
 
-const { expect } = require('chai');
+const {expect} = require('chai');
 const R = require('ramda');
 const svc = require('../service');
 const testHeaders = require('../helper/test-headers');
@@ -22,27 +22,40 @@ describe('tenantId aware role evaluation', () => {
 	};
 
 	beforeEach(() => {
-		headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken(roles)}` });
+		headers = R.merge(testHeaders, {
+			authorization: `Bearer ${generateToken(roles)}`,
+		});
 		atrixACL.setRules([
-			{ role: 'admin', path: '/pets/242', method: '*' },
-			{ role: 'editor', path: '/pets/242', method: '*' },
+			{role: 'admin', path: '/pets/242', method: '*'},
+			{role: 'editor', path: '/pets/242', method: '*'},
 		]);
 	});
 
 	it('should use the correct ACLs/roles when multiple tenants are set', async () => {
 		atrixACL.setRules([
 			{
-				tenant: 'ak', role: 'admin', path: '/pets/123', method: 'get',
+				tenant: 'ak',
+				role: 'admin',
+				path: '/pets/123',
+				method: 'get',
 			},
 			{
-				tenant: 'ak', role: 'event-viewer', path: '/pets/42', method: 'get',
+				tenant: 'ak',
+				role: 'event-viewer',
+				path: '/pets/42',
+				method: 'get',
 			},
 			{
-				tenant: 'voegb', role: 'editor', path: '/pets/242', method: 'get',
+				tenant: 'voegb',
+				role: 'editor',
+				path: '/pets/242',
+				method: 'get',
 			},
 		]);
 
-		headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken(roles)}` });
+		headers = R.merge(testHeaders, {
+			authorization: `Bearer ${generateToken(roles)}`,
+		});
 
 		let res = await svc.test
 			.get('/prefix/pets/242')
@@ -73,7 +86,6 @@ describe('tenantId aware role evaluation', () => {
 		expect(res.statusCode).to.equal(401);
 	});
 
-
 	it('should allow routes based on roles & tenantIds set through header', async () => {
 		const res = await svc.test
 			.get('/prefix/pets/242')
@@ -89,7 +101,9 @@ describe('tenantId aware role evaluation', () => {
 				roles: ['event-viewer'],
 			},
 		};
-		headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken(roles)}` });
+		headers = R.merge(testHeaders, {
+			authorization: `Bearer ${generateToken(roles)}`,
+		});
 
 		const res = await svc.test
 			.get('/prefix/pets/242')
@@ -100,7 +114,9 @@ describe('tenantId aware role evaluation', () => {
 	});
 
 	it('should allow routes based on default app ("pathfinder-app") found in token', async () => {
-		headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken()}` });
+		headers = R.merge(testHeaders, {
+			authorization: `Bearer ${generateToken()}`,
+		});
 
 		const res = await svc.test
 			.get('/prefix/pets/242')
@@ -111,21 +127,21 @@ describe('tenantId aware role evaluation', () => {
 	});
 
 	it('should allow routes based on default app ("pathfinder-app") found in token, with no tenantIds set in header', async () => {
-		headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken()}` });
+		headers = R.merge(testHeaders, {
+			authorization: `Bearer ${generateToken()}`,
+		});
 
-		const res = await svc.test
-			.get('/prefix/pets/242')
-			.set(headers);
+		const res = await svc.test.get('/prefix/pets/242').set(headers);
 
 		expect(res.statusCode).to.equal(200);
 	});
 
 	it('should deny routes when no default app or tenantIds are set, thus no role is found', async () => {
-		headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken([])}` });
+		headers = R.merge(testHeaders, {
+			authorization: `Bearer ${generateToken([])}`,
+		});
 
-		const res = await svc.test
-			.get('/prefix/pets/242')
-			.set(headers);
+		const res = await svc.test.get('/prefix/pets/242').set(headers);
 
 		expect(res.statusCode).to.equal(401);
 	});
