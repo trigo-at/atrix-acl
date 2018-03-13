@@ -4,17 +4,18 @@ const atrix = require('@trigo/atrix');
 const path = require('path');
 const supertest = require('supertest');
 
-atrix.configure({ pluginMap: { acl: path.join(__dirname, '../') } });
+atrix.configure({pluginMap: {acl: path.join(__dirname, '../')}});
 
 const svc = new atrix.Service('s1', {
 	acl: {
 		aclDefinition: path.join(__dirname, './acls'),
-		filterPropertiesDefinition: path.join(__dirname, './filter-properties-rules.js'),
+		filterPropertiesDefinition: path.join(
+			__dirname,
+			'./filter-properties-rules.js'
+		),
 		allowInject: true,
 		tokenResourceAccessRoleKey: 'pathfinder-app',
-		endpoints: [
-			'^(?!(/alive|/reset))',
-		],
+		endpoints: ['^(?!(/alive|/reset))'],
 	},
 	security: {
 		strategies: {
@@ -23,9 +24,7 @@ const svc = new atrix.Service('s1', {
 				algorithm: 'HS256',
 			},
 		},
-		endpoints: [
-			'^(?!(/alive|/reset))',
-		],
+		endpoints: ['^(?!(/alive|/reset))'],
 	},
 	swagger: {
 		serviceDefinition: path.join(__dirname, './s1.yml'),
@@ -43,10 +42,12 @@ svc.endpoints.add('http');
 
 const svcs = {};
 
-Object.keys(atrix.services).forEach((serviceName) => {
+Object.keys(atrix.services).forEach(serviceName => {
 	const s = atrix.services[serviceName];
 	if (s.config.config.endpoints.http) {
-		svcs[s.name] = supertest(`http://localhost:${svc.config.config.endpoints.http.port}`);
+		svcs[s.name] = supertest(
+			`http://localhost:${svc.config.config.endpoints.http.port}`
+		);
 	}
 });
 

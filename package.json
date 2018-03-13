@@ -1,47 +1,59 @@
 {
-  "name": "@trigo/atrix-acl",
-  "version": "3.8.0",
-  "engines": {
-    "node": ">=7.6.0"
-  },
-  "config": {
-    "loadOnStart": true
-  },
-  "description": "ACL for atrix http endpoints ",
-  "main": "index.js",
-  "scripts": {
-    "test": "NODE_ENV=test mocha --timeout 30000 $(find . -name '*.specs.js' -not -path './node_modules/*')",
-    "lint": "eslint lib"
-  },
-  "keywords": [
-    "atrix",
-    "swagger"
-  ],
-  "author": "Michael Schaerfer <michael@trigo.at>",
-  "license": "ISC",
-  "dependencies": {
-    "@trigo/atrix-swagger": "^0.4.11",
-    "bluebird": "^3.5.0",
-    "boom": "^5.2.0",
-    "joi": "^13.1.2",
-    "joi-date-extensions": "^1.0.2",
-    "jsonwebtoken": "^7.4.3",
-    "node-fetch": "^2.1.1",
-    "ramda": "^0.24.1",
-    "route-parser": "0.0.5",
-    "shot": "^3.4.2"
-  },
-  "devDependencies": {
-    "@trigo/atrix": "^1.2.0",
-    "chai": "^4.0.2",
-    "eslint": "^4.0.0",
-    "eslint-config-airbnb-base": "^11.2.0",
-    "eslint-config-trigo": "^4.1.1",
-    "eslint-plugin-import": "^2.3.0",
-    "eslint-plugin-mocha": "^4.10.1",
-    "mocha": "^3.4.2",
-    "nodemon": "^1.11.0",
-    "supertest": "^3.0.0",
-    "uuid": "^3.1.0"
-  }
+    "name": "@trigo/atrix-acl",
+    "version": "3.8.0",
+    "engines": {
+        "node": ">=7.6.0"
+    },
+    "config": {
+        "loadOnStart": true
+    },
+    "description": "ACL for atrix http endpoints ",
+    "main": "index.js",
+    "scripts": {
+        "test": "NODE_ENV=test mocha --timeout 30000 $(find . -name '*.specs.js' -not -path './node_modules/*')",
+        "lint": "eslint lib",
+        "precommit": "lint-staged",
+        "prettify": "prettier --write '**/*.{js,jsx}'"
+    },
+    "lint-staged": {
+        "*.{js,jsx}": [
+            "prettier --write",
+            "git add"
+        ]
+    },
+    "keywords": [
+        "atrix",
+        "swagger"
+    ],
+    "author": "trigo GmbH <team@trigo.at> (http://www.trigo.at)",
+    "license": "MIT",
+    "dependencies": {
+        "@trigo/atrix-swagger": "^0.4.11",
+        "bluebird": "^3.5.0",
+        "boom": "^5.2.0",
+        "joi": "^13.1.2",
+        "joi-date-extensions": "^1.0.2",
+        "jsonwebtoken": "^7.4.3",
+        "node-fetch": "^2.1.1",
+        "ramda": "^0.24.1",
+        "route-parser": "0.0.5",
+        "shot": "^3.4.2"
+    },
+    "devDependencies": {
+        "@trigo/atrix": "^1.2.0",
+        "chai": "^4.0.2",
+        "eslint": "^4.18.2",
+        "eslint-config-prettier": "^2.9.0",
+        "eslint-config-trigo": "^4.3.3",
+        "eslint-plugin-import": "^2.3.0",
+        "eslint-plugin-mocha": "^4.12.1",
+        "eslint-plugin-prettier": "^2.6.0",
+        "husky": "^0.14.3",
+        "lint-staged": "^7.0.0",
+        "mocha": "^3.4.2",
+        "nodemon": "^1.11.0",
+        "prettier": "^1.11.1",
+        "supertest": "^3.0.0",
+        "uuid": "^3.1.0"
+    }
 }

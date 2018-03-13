@@ -1,9 +1,8 @@
-
 /* eslint-env node, mocha */
 /* eslint no-unused-expressions: 0, arrow-body-style: 0, one-var-declaration-per-line: 0, one-var: 0 */
 
-const { expect } = require('chai');
-const { merge, contains } = require('ramda');
+const {expect} = require('chai');
+const {merge, contains} = require('ramda');
 const svc = require('../service');
 const testHeaders = require('../helper/test-headers');
 const generateToken = require('../helper/generate-token');
@@ -21,85 +20,103 @@ describe('Entity ACLs', () => {
 	});
 
 	beforeEach(async () => {
-		headers = merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak,voegb', authorization: `Bearer ${generateToken(roles)}` });
-		atrixACL.setRules([{
-			role: 'admin',
-			method: '*',
-			entity: 'event',
-			path: '/events/:id(/*_)',
-			idParam: 'id',
-		}, {
-			role: 'admin',
-			method: '*',
-			entity: 'budget',
-			path: '/events/:id/budget/:bid(/*_)',
-			idParam: 'bid',
-		}, {
-			role: 'admin',
-			method: '*',
-			entity: 'budget',
-			path: '/persons/:id/budget/:bid(/*_)',
-			idParam: 'bid',
-		}, {
-			role: 'admin',
-			method: '*',
-			entity: 'person',
-			path: '/persons/:resId(/*_)',
-			idParam: 'resId',
-		}]);
+		headers = merge(testHeaders, {
+			'x-pathfinder-tenant-ids': 'ak,voegb',
+			authorization: `Bearer ${generateToken(roles)}`,
+		});
+		atrixACL.setRules([
+			{
+				role: 'admin',
+				method: '*',
+				entity: 'event',
+				path: '/events/:id(/*_)',
+				idParam: 'id',
+			},
+			{
+				role: 'admin',
+				method: '*',
+				entity: 'budget',
+				path: '/events/:id/budget/:bid(/*_)',
+				idParam: 'bid',
+			},
+			{
+				role: 'admin',
+				method: '*',
+				entity: 'budget',
+				path: '/persons/:id/budget/:bid(/*_)',
+				idParam: 'bid',
+			},
+			{
+				role: 'admin',
+				method: '*',
+				entity: 'person',
+				path: '/persons/:resId(/*_)',
+				idParam: 'resId',
+			},
+		]);
 
-		atrixACL.setEntityACLs([{
-			entity: 'event',
-			id: '42',
-			acl: {
-				tenantIds: ['gpa'],
-				roles: ['special', 'goed:viewer', 'goed:admin', 'goed:viewer', 'goed:admin'],
+		atrixACL.setEntityACLs([
+			{
+				entity: 'event',
+				id: '42',
+				acl: {
+					tenantIds: ['gpa'],
+					roles: [
+						'special',
+						'goed:viewer',
+						'goed:admin',
+						'goed:viewer',
+						'goed:admin',
+					],
+				},
 			},
-		}, {
-			entity: 'budget',
-			id: '22',
-			acl: {
-				tenantIds: ['vida'],
-				roles: ['voegb:uper-event-viewer', 'goed:admin'],
+			{
+				entity: 'budget',
+				id: '22',
+				acl: {
+					tenantIds: ['vida'],
+					roles: ['voegb:uper-event-viewer', 'goed:admin'],
+				},
 			},
-		}, {
-			entity: 'person',
-			id: '21',
-			acl: {
-				tenantIds: ['goed'],
-				roles: [],
+			{
+				entity: 'person',
+				id: '21',
+				acl: {
+					tenantIds: ['goed'],
+					roles: [],
+				},
 			},
-		}]);
+		]);
 	});
 
 	it('attaches the acl object as entityACLs to "req.auth"', async () => {
-		const res = await svc.test
-			.get('/prefix/events/42')
-			.set(headers);
+		const res = await svc.test.get('/prefix/events/42').set(headers);
 		expect(res.statusCode).to.equal(200);
 		expect(res.body.entityACL).to.eql({
 			entity: 'event',
 			id: '42',
 			acl: {
 				tenantIds: ['gpa'],
-				roles: ['special', 'goed:viewer', 'goed:admin', 'goed:viewer', 'goed:admin'],
+				roles: [
+					'special',
+					'goed:viewer',
+					'goed:admin',
+					'goed:viewer',
+					'goed:admin',
+				],
 			},
 		});
 	});
 
 	it('does not fail with empty acls', async () => {
 		atrixACL.setEntityACLs([]);
-		const res = await svc.test
-			.get('/prefix/events/42')
-			.set(headers);
+		const res = await svc.test.get('/prefix/events/42').set(headers);
 		expect(res.statusCode).to.equal(200);
 		expect(res.body.entityACL).to.be.null;
 	});
 
 	it('parses ACLs and adds tenantIds', async () => {
-		const res = await svc.test
-			.get('/prefix/events/42')
-			.set(headers);
+		const res = await svc.test.get('/prefix/events/42').set(headers);
 		expect(res.statusCode).to.equal(200);
 		expect(res.body.tenantIds).to.contain('gpa');
 		expect(res.body.tenantIds).to.contain('goed');
@@ -108,13 +125,26 @@ describe('Entity ACLs', () => {
 	});
 
 	it('parses ACLs and populates roles', async () => {
-		const res = await svc.test
-			.get('/prefix/events/42')
-			.set(headers);
+		const res = await svc.test.get('/prefix/events/42').set(headers);
 		expect(res.statusCode).to.equal(200);
-		expect(contains({ role: 'viewer', tenant: 'goed', global: false }, res.body.roles)).to.be.true;
-		expect(contains({ role: 'admin', tenant: 'goed', global: false }, res.body.roles)).to.be.true;
-		expect(contains({ role: 'special', tenant: 'pathfinder-app', global: true }, res.body.roles)).to.be.true;
+		expect(
+			contains(
+				{role: 'viewer', tenant: 'goed', global: false},
+				res.body.roles
+			)
+		).to.be.true;
+		expect(
+			contains(
+				{role: 'admin', tenant: 'goed', global: false},
+				res.body.roles
+			)
+		).to.be.true;
+		expect(
+			contains(
+				{role: 'special', tenant: 'pathfinder-app', global: true},
+				res.body.roles
+			)
+		).to.be.true;
 	});
 
 	it('provides access to the route', async () => {
@@ -126,9 +156,7 @@ describe('Entity ACLs', () => {
 				},
 			})}`,
 		});
-		const res = await svc.test
-			.get('/prefix/events/42')
-			.set(headers);
+		const res = await svc.test.get('/prefix/events/42').set(headers);
 		expect(res.statusCode).to.equal(200);
 	});
 
@@ -143,7 +171,13 @@ describe('Entity ACLs', () => {
 				id: '42',
 				acl: {
 					tenantIds: ['gpa'],
-					roles: ['special', 'goed:viewer', 'goed:admin', 'goed:viewer', 'goed:admin'],
+					roles: [
+						'special',
+						'goed:viewer',
+						'goed:admin',
+						'goed:viewer',
+						'goed:admin',
+					],
 				},
 			});
 		});
@@ -158,7 +192,13 @@ describe('Entity ACLs', () => {
 				id: '42',
 				acl: {
 					tenantIds: ['gpa'],
-					roles: ['special', 'goed:viewer', 'goed:admin', 'goed:viewer', 'goed:admin'],
+					roles: [
+						'special',
+						'goed:viewer',
+						'goed:admin',
+						'goed:viewer',
+						'goed:admin',
+					],
 				},
 			});
 		});
@@ -177,9 +217,7 @@ describe('Entity ACLs', () => {
 			});
 		});
 		it('"/prefix/persons/21" matches entity "person"', async () => {
-			const res = await svc.test
-				.get('/prefix/persons/21')
-				.set(headers);
+			const res = await svc.test.get('/prefix/persons/21').set(headers);
 			expect(res.statusCode).to.equal(200);
 			expect(res.body.entityACL).to.eql({
 				entity: 'person',
