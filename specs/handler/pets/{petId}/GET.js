@@ -162,6 +162,64 @@ const getResource = (petId, tenantId) => {
 								method: 'delete',
 							},
 						},
+					}, {
+						id: 42,
+						name: 'foo',
+						tenantId: 'tenant2',
+						_acl: {
+							tenantIds: ['ak'],
+						},
+						_links: {
+							self: {
+								href: '/pets/242',
+								method: 'get',
+							},
+							update:	{
+								href: '/pets/242',
+								method: 'patch',
+							},
+							cancel:	{
+								href: '/pets/242/cancellation',
+								method: 'put',
+							},
+							'assign:venue:request': {
+								href: '/pets/242/venue-requests',
+								method: 'post',
+							},
+							'cancel:speaker': {
+								href: '/pets/242/speaker-requests/{requestId}/cancellation',
+								method: 'delete',
+							},
+						},
+					}, {
+						id: 42,
+						name: 'foo',
+						tenantId: 'tenant2',
+						_acl: {
+							roles: ['ak:user'],
+						},
+						_links: {
+							self: {
+								href: '/pets/242',
+								method: 'get',
+							},
+							update:	{
+								href: '/pets/242',
+								method: 'patch',
+							},
+							cancel:	{
+								href: '/pets/242/cancellation',
+								method: 'put',
+							},
+							'assign:venue:request': {
+								href: '/pets/242/venue-requests',
+								method: 'post',
+							},
+							'cancel:speaker': {
+								href: '/pets/242/speaker-requests/{requestId}/cancellation',
+								method: 'delete',
+							},
+						},
 					}],
 					food: {
 						id: 123,

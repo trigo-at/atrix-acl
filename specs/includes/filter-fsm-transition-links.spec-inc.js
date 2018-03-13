@@ -268,6 +268,79 @@ describe('Filter FSM transition links', () => {
 		expect(res.statusCode).to.equal(200);
 	});
 
+	it('applies document _acl.tenantId before filtering links', async () => {
+		const res = await svc.test
+			.get('/prefix/pets/242')
+			.set(headers);
+
+		const allowedLinks = {
+			self: {
+				href: '/pets/242',
+				method: 'get',
+			},
+			update:	{
+				href: '/pets/242',
+				method: 'patch',
+			},
+			cancel:	false,
+			'assign:venue:request': false,
+			'cancel:speaker': false,
+		};
+		const allNotAllowed = {
+			self: false,
+			update:	false,
+			cancel:	false,
+			'assign:venue:request': false,
+			'cancel:speaker': false,
+		};
+		expect(res.body._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.toys[0]._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.toys[1]._links).to.eql(allNotAllowed); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._embedded.toys[0]._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._embedded.toys[1]._links).to.eql(allNotAllowed); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._embedded.toys[2]._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.toys[2]._embedded.toys[3]._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.beer._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.body._embedded.beer._embedded.vine._links).to.eql(allowedLinks); //eslint-disable-line
+		expect(res.statusCode).to.equal(200);
+	});
+
+	it('applies document _acl.roles before filtering links', async () => {
+		atrixACL.setRules([
+			{ role: 'viewer', path: '/pets/242', method: 'get' },
+			{ role: 'user', path: '/pets/242', method: 'patch' },
+		]);
+		headers = merge(testHeaders, {
+			'x-pathfinder-tenant-ids': 'ak,voegb',
+			authorization: `Bearer ${generateToken({
+				'pathfinder-app': {
+					roles: ['ak:viewer'],
+				},
+			})}`,
+		});
+		const res = await svc.test
+			.get('/prefix/pets/242')
+			.set(headers);
+
+		const allowedLinks = {
+			self: {
+				href: '/pets/242',
+				method: 'get',
+			},
+			update: {
+				href: '/pets/242',
+				method: 'patch',
+			},
+			cancel:	false,
+			'assign:venue:request': false,
+			'cancel:speaker': false,
+		};
+		console.log(res.body);
+		expect(res.statusCode).to.equal(200);
+		expect(res.body._embedded.toys[2]._embedded.toys[4]._links).to.eql(allowedLinks); //eslint-disable-line
+	});
+
 	it('filters _links (hrefs + transitions) from response body which are not allowed due to ACLs', async () => {
 		atrixACL.setRules([
 			{ role: 'admin', path: '/pets/242', method: '*' },
