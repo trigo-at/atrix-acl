@@ -12,6 +12,7 @@
     "scripts": {
         "test": "NODE_ENV=test mocha --timeout 30000 $(find . -name '*.specs.js' -not -path './node_modules/*')",
         "lint": "eslint lib",
+        "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
         "precommit": "lint-staged",
         "prettify": "prettier --write '**/*.{js,jsx}'"
     },
