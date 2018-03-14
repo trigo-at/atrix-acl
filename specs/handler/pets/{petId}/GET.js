@@ -166,57 +166,57 @@ const getResource = (petId, tenantId) => {
 						id: 42,
 						name: 'foo',
 						tenantId: 'tenant2',
-						_acl: {
-							tenantIds: ['ak'],
-						},
+						// _acl: {
+							// tenantIds: ['ak'],
+						// },
 						_links: {
 							self: {
-								href: '/pets/242',
+								href: '/pets/42',
 								method: 'get',
 							},
 							update:	{
-								href: '/pets/242',
+								href: '/pets/42',
 								method: 'patch',
 							},
 							cancel:	{
-								href: '/pets/242/cancellation',
+								href: '/pets/42/cancellation',
 								method: 'put',
 							},
 							'assign:venue:request': {
-								href: '/pets/242/venue-requests',
+								href: '/pets/42/venue-requests',
 								method: 'post',
 							},
 							'cancel:speaker': {
-								href: '/pets/242/speaker-requests/{requestId}/cancellation',
+								href: '/pets/42/speaker-requests/{requestId}/cancellation',
 								method: 'delete',
 							},
 						},
 					}, {
-						id: 42,
+						id: 43,
 						name: 'foo',
 						tenantId: 'tenant2',
-						_acl: {
-							roles: ['ak:user'],
-						},
+						// _acl: {
+							// roles: ['ak:user'],
+						// },
 						_links: {
 							self: {
-								href: '/pets/242',
+								href: '/pets/43',
 								method: 'get',
 							},
 							update:	{
-								href: '/pets/242',
+								href: '/pets/43',
 								method: 'patch',
 							},
 							cancel:	{
-								href: '/pets/242/cancellation',
+								href: '/pets/43/cancellation',
 								method: 'put',
 							},
 							'assign:venue:request': {
-								href: '/pets/242/venue-requests',
+								href: '/pets/43/venue-requests',
 								method: 'post',
 							},
 							'cancel:speaker': {
-								href: '/pets/242/speaker-requests/{requestId}/cancellation',
+								href: '/pets/43/speaker-requests/{requestId}/cancellation',
 								method: 'delete',
 							},
 						},
