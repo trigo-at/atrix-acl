@@ -58,4 +58,13 @@ describe('User Data', () => {
 		expect(res.request.auth).to.exist;
 		expect(res.request.auth.effectiveRoles).to.have.all.members(['super-event-viewer', 'super-admin', 'admin', 'editor']);
 	});
+
+
+	it('should filter all tenantIds from headers that are not reflected in the token resource access', async () => {
+		const headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak,voegb,goed', authorization: `Bearer ${generateToken(roles)}` });
+		const res = await server.inject({ method: 'get', url: '/prefix/', headers });
+
+		expect(res.request.auth).to.exist;
+		expect(res.request.auth.tenantIds).not.to.contain('goed');
+	});
 });
