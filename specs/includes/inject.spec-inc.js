@@ -49,4 +49,60 @@ describe('Inject', () => {
 		expect(res.statusCode).to.equal(200);
 		expect(res.body.inject.inject).to.equal(42);
 	});
+
+	it('should delete x-atrix-acl-no-inject-bypass form request headers for futher inject calls to work', async () => {
+		const roles = {
+			'pathfinder-app': { roles: ['editor1'] },
+		};
+		const headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken(roles)}` });
+
+		atrixACL.allowInject = true;
+		atrixACL.setRules([
+			{ role: 'admin', path: '/admin-only-assert-access(*_)', method: '*' },
+			{ role: 'editor1', path: '/with-inject(*_)', method: '*' },
+			{ role: 'editor1', path: '/editor1(*_)', method: '*' }]);
+		const res = await svc.test
+			.get('/prefix/with-inject')
+			.set(headers);
+		expect(res.statusCode).to.equal(200);
+		expect(res.body.inject.inject).to.equal(42);
+	});
+
+	it('should respect allowedInjection when asserting acl access', async () => {
+		const roles = {
+			'pathfinder-app': { roles: ['editor1'] },
+		};
+		const headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken(roles)}` });
+
+		atrixACL.allowInject = true;
+		atrixACL.setRules([
+			{ role: 'admin', path: '/admin-only-assert-access(*_)', method: '*' },
+			{ role: 'editor1', path: '/with-inject-assert-access(*_)', method: '*' },
+		]);
+
+		const res = await svc.test
+			.get('/prefix/with-inject-assert-access')
+			.set(headers);
+		expect(res.statusCode).to.equal(200);
+		expect(res.body.inject).to.equal(42);
+	});
+
+	it('should deny access when asserting acl when x-atrix-acl-no-inject-bypass form request header is set', async () => {
+		const roles = {
+			'pathfinder-app': { roles: ['ak:editor1'] },
+		};
+		const headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken(roles)}`, 'x-pathfinder-tenant-ids': 'ak' });
+
+		atrixACL.allowInject = true;
+		atrixACL.setRules([
+			{ role: 'editor1', path: '/admin-only-assert-access(*_)', method: '*' },
+			{ role: 'editor1', path: '/with-inject-assert-access(*_)', method: '*' },
+		]);
+
+		const res = await svc.test
+			.get('/prefix/with-inject-assert-access/no-bypass')
+			.set(headers);
+		expect(res.statusCode).to.equal(200);
+		expect(res.body.inject.statusCode).to.equal(403);
+	});
 });
