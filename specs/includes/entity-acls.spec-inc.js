@@ -51,23 +51,25 @@ describe('Entity ACLs', () => {
 		atrixACL.setEntityACLs([{
 			entity: 'event',
 			id: '42',
+			entityTenantId: 'gpa',
 			acl: {
-				tenantIds: ['gpa'],
-				roles: ['special', 'goed:viewer', 'goed:admin', 'goed:viewer', 'goed:admin'],
+				tenantId: 'ak',
+				roles: ['special', 'viewer', 'admin'],
 			},
 		}, {
 			entity: 'budget',
 			id: '22',
+			entityTenantId: 'ak',
 			acl: {
-				tenantIds: ['vida'],
-				roles: ['voegb:uper-event-viewer', 'goed:admin'],
+				tenantId: 'vida',
+				roles: ['sper-event-viewer', 'admin'],
 			},
 		}, {
 			entity: 'person',
 			id: '21',
+			entityId: 'ak',
 			acl: {
-				tenantIds: ['goed'],
-				roles: [],
+				tenantId: ['goed'],
 			},
 		}]);
 	});
@@ -77,14 +79,15 @@ describe('Entity ACLs', () => {
 			.get('/prefix/events/42')
 			.set(headers);
 		expect(res.statusCode).to.equal(200);
-		expect(res.body.entityACL).to.eql({
+		expect(res.body.entityACLs).to.eql([{
 			entity: 'event',
 			id: '42',
+			entityTenantId: 'ak',
 			acl: {
-				tenantIds: ['gpa'],
-				roles: ['special', 'goed:viewer', 'goed:admin', 'goed:viewer', 'goed:admin'],
+				tenantId: 'gpa',
+				roles: ['special', 'viewer', 'admin'],
 			},
-		});
+		}]);
 	});
 
 	it('does not fail with empty acls', async () => {
@@ -93,18 +96,20 @@ describe('Entity ACLs', () => {
 			.get('/prefix/events/42')
 			.set(headers);
 		expect(res.statusCode).to.equal(200);
-		expect(res.body.entityACL).to.be.null;
+		expect(res.body.entityACLs).to.eql([]);
 	});
 
-	it('parses ACLs and adds tenantIds', async () => {
+	it.only('parses ACLs and adds tenantIds', async () => {
 		const res = await svc.test
 			.get('/prefix/events/42')
 			.set(headers);
 		expect(res.statusCode).to.equal(200);
+		console.log(JSON.stringify(res.body, null, 2));
+		expect(res.body.tenantIds).to.contain('ak');
+		expect(res.body.tenantIds).to.contain('voegb');
 		expect(res.body.tenantIds).to.contain('gpa');
-		expect(res.body.tenantIds).to.contain('goed');
-		expect(res.body.tenantIds).not.to.contain('special');
-		expect(res.body.tenantIds.length).to.equal(4);
+		expect(res.body.roles.find(r => r.role === 'admin' && r.tenant === 'gpa')).to.exist;
+		expect(res.body.roles.find(r => r.role === 'special' && r.tenant === 'gpa')).not.to.exist;
 	});
 
 	it('parses ACLs and populates roles', async () => {
