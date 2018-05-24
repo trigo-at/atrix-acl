@@ -9,6 +9,17 @@ const testHeaders = require('../helper/test-headers');
 const generateToken = require('../helper/generate-token');
 const { merge } = require('ramda');
 
+const getHeaders = (roles, tenantIds) => {
+	return merge(testHeaders, {
+		'x-pathfinder-tenant-ids': tenantIds.join(','),
+		authorization: `Bearer ${generateToken({
+			'pathfinder-app': {
+				roles,
+			},
+		})}`,
+	});
+};
+
 describe('Filter FSM transition links', () => {
 	let atrixACL, headers;
 	const roles = {
@@ -272,17 +283,21 @@ describe('Filter FSM transition links', () => {
 	});
 
 	describe('with entity ACLs defined', () => {
-		it('applies entityACL.tenantIds before filtering links', async () => {
+		it('applies entityACL before filtering each link', async () => {
+			atrixACL.setRules([{
+				role: 'admin', path: '/pets/:id', method: '*', entity: 'pet',
+			}]);
 			atrixACL.setEntityACLs([{
 				entity: 'pet',
 				id: '42',
+				entityTenantId: 'ak',
 				acl: {
-					tenantIds: ['ak'],
+					tenantId: 'vida',
 				},
 			}]);
 			const res = await svc.test
 				.get('/prefix/pets/242')
-				.set(headers);
+				.set(getHeaders(['vida:admin'], ['vida']));
 
 			const allowedLinks = {
 				self: {
@@ -298,49 +313,7 @@ describe('Filter FSM transition links', () => {
 				'cancel:speaker': false,
 			};
 			expect(res.statusCode).to.equal(200);
-		expect(res.body._embedded.toys[2]._embedded.toys[3]._links).to.eql(allowedLinks); //eslint-disable-line
-		});
-
-		it('applies entityACLs.roles before filtering links', async () => {
-			atrixACL.setRules([{
-				role: 'viewer', path: '/pets/:id', method: 'get', entity: 'pet',
-			}, {
-				role: 'user', path: '/pets/:id', method: 'patch', entity: 'pet',
-			}]);
-			atrixACL.setEntityACLs([{
-				entity: 'pet',
-				id: '43',
-				acl: {
-					roles: ['ak:user'],
-				},
-			}]);
-			headers = merge(testHeaders, {
-				'x-pathfinder-tenant-ids': 'ak,voegb',
-				authorization: `Bearer ${generateToken({
-					'pathfinder-app': {
-						roles: ['ak:viewer'],
-					},
-				})}`,
-			});
-			const res = await svc.test
-				.get('/prefix/pets/242')
-				.set(headers);
-
-			const allowedLinks = {
-				self: {
-					href: '/pets/43',
-					method: 'get',
-				},
-				update: {
-					href: '/pets/43',
-					method: 'patch',
-				},
-				cancel:	false,
-				'assign:venue:request': false,
-				'cancel:speaker': false,
-			};
-			expect(res.statusCode).to.equal(200);
-			expect(res.body._embedded.toys[2]._embedded.toys[4]._links).to.eql(allowedLinks); //eslint-disable-line
+			expect(res.body._embedded.toys[2]._embedded.toys[3]._links).to.eql(allowedLinks); //eslint-disable-line
 		});
 	});
 
