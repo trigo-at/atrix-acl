@@ -38,5 +38,5 @@ describe('AtrixACL', () => {
 
 	require('./includes/response-filters.spec-inc'); //eslint-disable-line
 	require('./includes/payload-filters.spec-inc'); //eslint-disable-line
-	require('./includes/payload-filters-perf.spec-inc'); //eslint-disable-line
+	// require('./includes/payload-filters-perf.spec-inc'); //eslint-disable-line
 });
