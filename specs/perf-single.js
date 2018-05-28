@@ -1,6 +1,6 @@
 'use strict';
 
-const data = require('./data-singleobj');
+const data = require('./testdata/data-singleobj');
 // const data = {};
 const {
 	lensPath, view, set, clone, startsWith, filter: ramdaFilter, pipe, reverse,

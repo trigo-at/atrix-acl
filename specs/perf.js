@@ -11,7 +11,7 @@ const svc = require('./service');
 const testHeaders = require('./helper/test-headers');
 const generateToken = require('./helper/generate-token');
 
-const testPayload = require('./data-huge.json');
+const testPayload = require('./testdata/data-huge.json');
 
 const run = async () => {
 	await svc.start();
