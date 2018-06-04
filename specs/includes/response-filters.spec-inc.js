@@ -79,7 +79,6 @@ describe('Response Filters', () => {
 	it('should filter sub-objects', async () => {
 		atrixACL.setFilterRules([
 			{ key: '_embedded.*', when: ({ root, value, path }) => {
-				console.log('path', path);
 				return value.tenantId && value.tenantId !== root.tenantId;
 			}, value: undefined },
 		]);
