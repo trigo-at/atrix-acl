@@ -1,6 +1,6 @@
 {
   "name": "@trigo/atrix-acl",
-  "version": "3.11.6",
+  "version": "3.11.7",
   "engines": {
     "node": ">=7.6.0"
   },
