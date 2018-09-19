@@ -45,6 +45,13 @@ describe('User Data', () => {
 		]);
 	});
 
+	it('should assign user data "username" to req.auth', async () => {
+		const headers = R.merge(testHeaders, { authorization: `Bearer ${generateToken(roles)}` });
+		const res = await server.inject({ method: 'get', url: '/prefix/', headers });
+
+		expect(res.request.auth).to.exist;
+		expect(res.request.auth.username).to.eql('john.doe@test.com');
+	});
 	it('should assign user data (roles) to req.auth based on tenantIds set in header', async () => {
 		let headers = R.merge(testHeaders, { 'x-pathfinder-tenant-ids': 'ak', authorization: `Bearer ${generateToken(roles)}` });
 		let res = await server.inject({ method: 'get', url: '/prefix/', headers });
