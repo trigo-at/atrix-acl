@@ -6,7 +6,8 @@ const supertest = require('supertest');
 
 atrix.configure({ pluginMap: { acl: path.join(__dirname, '../') } });
 
-const svc = new atrix.Service('s1', {
+const svc = atrix.addService({
+	name: 'svc1',
 	acl: {
 		aclDefinition: path.join(__dirname, './acls'),
 		filterPropertiesDefinition: path.join(__dirname, './filter-properties-rules.js'),
@@ -39,8 +40,6 @@ const svc = new atrix.Service('s1', {
 		},
 	},
 });
-atrix.addService(svc);
-svc.endpoints.add('http');
 
 const svcs = {};
 
