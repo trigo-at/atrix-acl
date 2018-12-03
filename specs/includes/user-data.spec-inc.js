@@ -37,11 +37,11 @@ describe('User Data', () => {
 
 		expect(res.request.auth).to.exist;
 		expect(res.request.auth.roles).to.eql([
-			{ tenant: 'pathfinder-app', role: 'super-admin', global: true },
-			{ tenant: 'ak', role: 'admin', global: false },
-			{ tenant: 'ak', role: 'editor', global: false },
-			{ tenant: 'voegb', role: 'super-event-viewer', global: false },
-			{ tenant: 'ak', role: 'super-admin', global: false },
+			{ tenant: 'pathfinder-app', role: 'super-admin', global: true, source: 'token' },
+			{ tenant: 'ak', role: 'admin', global: false, source: 'token' },
+			{ tenant: 'ak', role: 'editor', global: false, source: 'token' },
+			{ tenant: 'voegb', role: 'super-event-viewer', global: false, source: 'token' },
+			{ tenant: 'ak', role: 'super-admin', global: false, source: 'token' },
 		]);
 	});
 
