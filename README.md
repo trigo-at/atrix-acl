@@ -2,6 +2,11 @@
 
 Atrix plugin providing Access Control Lists to requests to specific routes.
 
+## Compatibility
+
+`atrix-acl >= 4.0.0` work with `artix >= 6.0.0`. 
+For versin compatible with `atrix < 6.0.0` checkouot `v3` branch
+
 ## Configuration
 
 Sample Configuration:
