@@ -3,5 +3,5 @@
 let obj;
 
 module.exports = {
-	obj,
+    obj,
 };

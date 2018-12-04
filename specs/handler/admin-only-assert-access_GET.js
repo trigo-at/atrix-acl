@@ -1,4 +1,4 @@
 module.exports = (req, reply) => {
-	req.assertAccess(req, 'voegb');
-	reply(42);
+    req.assertAccess(req, 'voegb');
+    reply(42);
 };

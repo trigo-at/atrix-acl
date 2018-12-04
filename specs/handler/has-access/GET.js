@@ -3,9 +3,9 @@
 const Boom = require('boom');
 
 module.exports = async (req, reply, service) => {
-	if (!req.hasAccess(req, req.query.tenantId)) {
-		throw Boom.forbidden('AtrixACL denied');
-	}
+    if (!req.hasAccess(req, req.query.tenantId)) {
+        throw Boom.forbidden('AtrixACL denied');
+    }
 
-	reply().code(204);
+    reply().code(204);
 };
