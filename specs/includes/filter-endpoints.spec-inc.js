@@ -14,6 +14,7 @@ describe('Filter endpoints', () => {
     before(async () => {
         atrixACL = svc.service.plugins.acl;
     });
+
     it('denies GET to / route if no ACLs are defined', async () => {
         const res = await svc.test.get('/prefix/').set(testHeaders);
 
@@ -26,6 +27,7 @@ describe('Filter endpoints', () => {
         const res = await svc.test.get('/prefix/').set(testHeaders);
         expect(res.statusCode).to.equal(200);
     });
+
     it('should ignore routes defined in config.endpoints', async () => {
         atrixACL.setRules([{role: 'admin', path: '/*_', method: '*'}]);
 

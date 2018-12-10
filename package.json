@@ -29,19 +29,19 @@
   "author": "trigo Gmbh <office@trigo.at>",
   "license": "ISC",
   "dependencies": {
-    "@trigo/atrix-swagger": "^2.0.0",
+    "@trigo/atrix-swagger": "^2.1.0",
     "bluebird": "^3.5.0",
-    "boom": "^5.2.0",
-    "joi": "^13.1.2",
+    "boom": "^7.3.0",
+    "joi": "^14.3.0",
     "joi-date-extensions": "^1.0.2",
     "jsonwebtoken": "^8.4.0",
     "node-fetch": "^2.1.1",
     "ramda": "^0.24.1",
     "route-parser": "0.0.5",
-    "shot": "^3.4.2"
+    "shot": "^4.0.7"
   },
   "devDependencies": {
-    "@trigo/atrix": "^6.0.0-7",
+    "@trigo/atrix": "^6.0.0-12",
     "chai": "^4.0.2",
     "eslint": "^5.9.0",
     "eslint-config-prettier": "^3.3.0",
